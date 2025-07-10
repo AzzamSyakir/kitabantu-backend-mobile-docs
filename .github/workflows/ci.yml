@@ -63,7 +63,7 @@ jobs:
         run: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
 
       - name: Build & Push Docker Images
-         run: |
+        run: |
           docker build -f docker/dockerfile -t bukanasa/kitabantu-backend-mobile:latest .
           docker build -f docker/dockerfile-socket-server -t bukanasa/socket-server .
           docker push bukanasa/kitabantu-backend-mobile:latest
