@@ -67,9 +67,7 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": [
-                "php-amqplib/php-amqplib"
-            ]
+            "dont-discover": []
         }
     },
     "config": {
