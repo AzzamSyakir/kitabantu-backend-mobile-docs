@@ -64,7 +64,7 @@ jobs:
 
       - name: Build & Push Docker Images
         run: |
-          docker build -f docker/dockerfile -t bukanasa/kitaBantu-Backend-Mobile:latest .
+          docker build -f docker/dockerfile -t bukanasa/kitabantu-backend-mobile:latest .
           docker build -f docker/dockerfile-socket-server -t bukanasa/socket-server .
-          docker push bukanasa/kitaBantu-Backend-Mobile:latest
+          docker push bukanasa/kitabantu-backend-mobile:latest
           docker push bukanasa/socket-server
