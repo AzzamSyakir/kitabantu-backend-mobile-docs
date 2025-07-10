@@ -51,9 +51,10 @@ jobs:
 
       - name: run rabbitmq container
         run: docker compose --env-file .env -f ./docker/docker-compose.yml up -d rabbitmq
-
       - name: Install dependencies with Composer
-        run: composer install --no-dev --optimize-autoloader
+        run: |
+          sleep 5
+          composer install --no-dev --optimize-autoloader
 
       - name: Login to DockerHub
         env:
