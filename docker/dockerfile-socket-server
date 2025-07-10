@@ -1,0 +1,22 @@
+#start from golang base image
+FROM 1.24-alpine
+
+#install dependencies
+RUN apk update
+RUN apk add --no-cache git build-base
+
+#setup workdir
+RUN mkdir -p /app
+ENV WORKDIR /app
+WORKDIR $WORKDIR
+
+# copy source from host to docker container
+COPY ./socket-server ./socket-server
+COPY ../../.env .env
+# install dependencies project
+WORKDIR $WORKDIR/socket-server/
+RUN go mod download
+
+# run the Go app.
+WORKDIR $WORKDIR
+CMD ["go", "run", "socket.go"]
