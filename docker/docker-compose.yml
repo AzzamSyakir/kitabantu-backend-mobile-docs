@@ -1,0 +1,87 @@
+services:
+    app-db:
+        image: mysql:8.0.41-debian
+        container_name: app-db
+        restart: always
+        tty: true
+        environment:
+            MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+            MYSQL_USER: ${DB_USERNAME}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_DATABASE: ${DB_DATABASE}
+        ports:
+            - ${DB_PORT}:3306
+        volumes:
+            - app-db:/var/lib/mysql
+    redis:
+        image: redis:latest
+        container_name: redis
+        restart: always
+        ports:
+            - ${REDIS_PORT}:6379
+        volumes:
+            - redis-data:/data
+    rabbitmq:
+        image: rabbitmq:management
+        container_name: rabbitmq
+        restart: unless-stopped
+        ports:
+            - ${RABBITMQ_PORT}:5672
+            - ${RABBITMQ_MANAGEMENT_PORT}:15672
+        environment:
+            RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+            RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+        volumes:
+            - rabbitmq-data:/var/lib/rabbitmq/
+        healthcheck:
+            test: rabbitmq-diagnostics check_port_connectivity
+            interval: 5s
+            retries: 20
+    socket-server:
+        build:
+            context: ./socket-server
+            dockerfile: dockerfile
+        container_name: socket-server
+        restart: always
+        tty: true
+        depends_on:
+            - redis
+        environment:
+            REDIS_HOST: redis
+            REDIS_PORT: ${REDIS_PORT}
+            SOCKET_REDIS_DB: ${SOCKET_REDIS_DB}
+            SOCKET_CHANNEL: ${SOCKET_CHANNEL}
+            SOCKET_PORT: ${SOCKET_PORT}
+            SOCKET_CORS_ORIGIN: ${SOCKET_CORS_ORIGIN}
+        volumes:
+            - socket-data:/srv/logs
+        ports:
+            - ${SOCKET_PORT}:8080
+    ngrok:
+        image: ngrok/ngrok
+        container_name: ngrok
+        restart: always
+        network_mode: host
+        environment:
+        - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+        command: http --domain=${NGROK_DOMAIN} ${NGROK_PORT}
+
+    # app:
+    #     build:
+    #         context: ../
+    #         dockerfile: docker/dockerfile
+    #     container_name: app
+    #     restart: always
+    #     tty: true
+    #     depends_on:
+    #         - app-db
+    #     environment:
+    #         DB_HOST: app-db
+    #     volumes:
+    #         - ../.:/var/www/
+    #     command: /bin/sh -c "php artisan config:cache && php artisan migrate --force && php-fpm"
+volumes:
+    app-db:
+    rabbitmq-data:
+    redis-data:
+    socket-data:
