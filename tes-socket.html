@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="shortcut icon" href="#">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Test Realtime Chat Websocket Native</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .room {
+      border: 1px solid #ccc;
+      padding: 10px;
+      width: 45%;
+      min-width: 300px;
+    }
+
+    .room h2 {
+      margin-top: 0;
+    }
+
+    .chats {
+      height: 150px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      padding: 5px;
+      background: #fafafa;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="rooms-container"></div>
+  <script>
+    const roomConfigs = [
+      { room: 'tes-room-1', user_id: 'userA' },
+      { room: 'tes-room-1', user_id: 'userB' },
+      { room: 'tes-room-2', user_id: 'userC' },
+      { room: 'tes-room-2', user_id: 'userD' },
+    ];
+
+    const container = document.getElementById('rooms-container');
+
+    roomConfigs.forEach(({ room, user_id }, i) => {
+      const ws = new WebSocket(`ws://localhost:8080/ws?user_id=${user_id}`);
+
+      ws.onopen = () => {
+        console.log(`WebSocket connected for ${user_id}`);
+        ws.send(JSON.stringify({
+          event: "join_room",
+          room,
+          user_id
+        }));
+      };
+
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+
+        if (data.event === "chat_room") {
+          const boxId = `chats-${data.room}-${user_id}`;
+          const chatsBox = document.getElementById(boxId);
+
+          if (chatsBox) {
+            const hasText = typeof data.chat === "string" && data.chat.trim() !== "";
+            const hasFile = typeof data.file === "string" && data.file.trim() !== "";
+            const isFile = hasFile && /\.(jpe?g|png|gif|webp|pdf)$/i.test(data.file);
+            const isEmpty = !hasText && !hasFile;
+
+            // Skip kalau bener-bener kosong (nggak ada teks & file)
+            if (isEmpty) return;
+
+            let content = `<div><strong>${data.user_id}</strong>`;
+
+            // Tampilkan teks chat (kalau ada dan bukan URL)
+            if (hasText) {
+              content += `: ${data.chat}`;
+            }
+
+            content += `</div>`;
+
+            // Render file (gambar/pdf/link), tapi JANGAN tampilkan URL sebagai teks
+            if (isFile) {
+              const isImage = /\.(jpe?g|png|gif|webp)$/i.test(data.file);
+              const isPDF = /\.pdf$/i.test(data.file);
+
+              if (isImage) {
+                content += `<div><img src="${data.file}" alt="image" style="max-width: 200px; margin-top: 4px; border-radius: 6px;" /></div>`;
+              } else if (isPDF) {
+                content += `<div><a href="${data.file}" target="_blank" style="color:blue; text-decoration:underline; margin-top:4px;">Lihat PDF</a></div>`;
+              } else {
+                content += `<div><a href="${data.file}" target="_blank" style="color:gray;">Download File</a></div>`;
+              }
+            }
+
+            chatsBox.insertAdjacentHTML("beforeend", content);
+            chatsBox.scrollTop = chatsBox.scrollHeight;
+          }
+        }
+
+        if (data.event === "joined_room") {
+          console.log(`[${data.room}] ${data.user_id} joined the room`);
+        }
+      };
+
+      ws.onerror = (err) => {
+        console.error(`WebSocket error for ${user_id}`, err);
+      };
+
+      ws.onclose = () => {
+        console.log(`WebSocket closed for ${user_id}`);
+      };
+
+      const roomBox = document.createElement('div');
+      roomBox.className = 'room';
+      roomBox.innerHTML = `
+          <h2>${room} - <small>${user_id}</small></h2>
+          <div class="chats" id="chats-${room}-${user_id}"></div>
+          <input type="text" id="input-${room}-${user_id}" placeholder="Type a chat..." />
+          <button id="send-btn-${i}">Send</button>
+        `;
+      container.appendChild(roomBox);
+
+      document.getElementById(`send-btn-${i}`).addEventListener('click', () => {
+        const input = document.getElementById(`input-${room}-${user_id}`);
+        const chat = input.value.trim();
+        if (!chat) return;
+
+        ws.send(JSON.stringify({
+          event: "send_chat",
+          room,
+          user_id,
+          chat
+        }));
+        input.value = '';
+      });
+    });
+  </script>
+
+</body>
+
+</html>
