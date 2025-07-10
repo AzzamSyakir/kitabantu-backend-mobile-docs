@@ -11,7 +11,7 @@ ENV WORKDIR /app
 WORKDIR $WORKDIR
 
 # copy source from host to docker container
-COPY ./socket-server ./socket-server
+COPY . ./socket-server
 COPY ../../.env .env
 # install dependencies project
 WORKDIR $WORKDIR/socket-server/
