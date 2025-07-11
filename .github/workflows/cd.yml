@@ -17,37 +17,32 @@ jobs:
       - name: Copy .env.example to .env
         run: cp .env.example .env
 
-      - name: Override secret values in .env
+      - name: Override env values with GitHub Secrets
         run: |
-          sed -i "s|^APP_KEY=.*|APP_KEY=${{ secrets.APP_KEY }}|" .env
-          sed -i "s|^DB_DATABASE=.*|DB_DATABASE=${{ secrets.DB_DATABASE }}|" .env
-          sed -i "s|^DB_USERNAME=.*|DB_USERNAME=${{ secrets.DB_USERNAME }}|" .env
-          sed -i "s|^DB_PASSWORD=.*|DB_PASSWORD=${{ secrets.DB_PASSWORD }}|" .env
-          sed -i "s|^DB_ROOT_PASSWORD=.*|DB_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}|" .env
+          sed -i "s|^APP_KEY=\$|APP_KEY=${{ secrets.APP_KEY }}|" .env
+          sed -i "s|^DB_DATABASE=\$|DB_DATABASE=${{ secrets.DB_DATABASE }}|" .env
+          sed -i "s|^DB_USERNAME=\$|DB_USERNAME=${{ secrets.DB_USERNAME }}|" .env
+          sed -i "s|^DB_PASSWORD=\$|DB_PASSWORD=${{ secrets.DB_PASSWORD }}|" .env
+          sed -i "s|^DB_ROOT_PASSWORD=\$|DB_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}|" .env
 
-          sed -i "s|^MAIL_USERNAME=.*|MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}|" .env
-          sed -i "s|^MAIL_PASSWORD=.*|MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}|" .env
-          sed -i "s|^MAIL_FROM_ADDRESS=.*|MAIL_FROM_ADDRESS=${{ secrets.MAIL_FROM_ADDRESS }}|" .env
+          sed -i "s|^MAIL_HOST=\$|MAIL_HOST=${{ secrets.MAIL_HOST }}|" .env
+          sed -i "s|^MAIL_USERNAME=\$|MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}|" .env
+          sed -i "s|^MAIL_PASSWORD=\$|MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}|" .env
 
-          sed -i "s|^GOOGLE_CLIENT_ID=.*|GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}|" .env
-          sed -i "s|^GOOGLE_CLIENT_SECRET=.*|GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}|" .env
-          sed -i "s|^FACEBOOK_CLIENT_ID=.*|FACEBOOK_CLIENT_ID=${{ secrets.FACEBOOK_CLIENT_ID }}|" .env
-          sed -i "s|^FACEBOOK_CLIENT_SECRET=.*|FACEBOOK_CLIENT_SECRET=${{ secrets.FACEBOOK_CLIENT_SECRET }}|" .env
+          sed -i "s|^RABBITMQ_USER=\$|RABBITMQ_USER=${{ secrets.RABBITMQ_USER }}|" .env
+          sed -i "s|^RABBITMQ_PASSWORD=\$|RABBITMQ_PASSWORD=${{ secrets.RABBITMQ_PASSWORD }}|" .env
 
-          sed -i "s|^TMDB_API_KEY=.*|TMDB_API_KEY=${{ secrets.TMDB_API_KEY }}|" .env
+          sed -i "s|^JWT_SECRET=\$|JWT_SECRET=${{ secrets.JWT_SECRET }}|" .env
+          sed -i "s|^REDIS_PASS=\$|REDIS_PASS=${{ secrets.REDIS_PASS }}|" .env
 
-          sed -i "s|^JWT_SECRET=.*|JWT_SECRET=${{ secrets.JWT_SECRET }}|" .env
+          sed -i "s|^MIDTRANS_SERVER_KEY=\$|MIDTRANS_SERVER_KEY=${{ secrets.MIDTRANS_SERVER_KEY }}|" .env
+          sed -i "s|^MIDTRANS_CLIENT_KEY=\$|MIDTRANS_CLIENT_KEY=${{ secrets.MIDTRANS_CLIENT_KEY }}|" .env
 
-          sed -i "s|^MIDTRANS_SERVER_KEY=.*|MIDTRANS_SERVER_KEY=${{ secrets.MIDTRANS_SERVER_KEY }}|" .env
-          sed -i "s|^MIDTRANS_CLIENT_KEY=.*|MIDTRANS_CLIENT_KEY=${{ secrets.MIDTRANS_CLIENT_KEY }}|" .env
+          sed -i "s|^NGROK_AUTHTOKEN=\$|NGROK_AUTHTOKEN=${{ secrets.NGROK_AUTHTOKEN }}|" .env
+          sed -i "s|^NGROK_DOMAIN=\$|NGROK_DOMAIN=${{ secrets.NGROK_DOMAIN }}|" .env
 
-          sed -i "s|^NGROK_AUTHTOKEN=.*|NGROK_AUTHTOKEN=${{ secrets.NGROK_AUTHTOKEN }}|" .env
-          sed -i "s|^NGROK_DOMAIN=.*|NGROK_DOMAIN=${{ secrets.NGROK_DOMAIN }}|" .env
-
-          sed -i "s|^RABBITMQ_USER=.*|RABBITMQ_USER=${{ secrets.RABBITMQ_USER }}|" .env
-          sed -i "s|^RABBITMQ_PASSWORD=.*|RABBITMQ_PASSWORD=${{ secrets.RABBITMQ_PASSWORD }}|" .env
-
-          sed -i "s|^REDIS_PASS=.*|REDIS_PASS=${{ secrets.REDIS_PASS }}|" .env
+          sed -i "s|^GOOGLE_CLIENT_ID=\$|GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}|" .env
+          sed -i "s|^GOOGLE_CLIENT_SECRET=\$|GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}|" .env
 
       - name: Login to DockerHub
         env:
@@ -56,10 +51,11 @@ jobs:
         run: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
 
       - name: Stop and Remove Old Containers
-        run: docker compose --env-file ./.env -f ~/program/movie-tracker/docker/docker-compose.yml down --remove-orphans
+        run: docker compose --env-file ./.env -f ~/program/kita-bantu-mobile-be/docker-compose.yml down --remove-orphans
 
-      - name: Remove Old Docker Image
-        run: docker images --filter "reference=bukanasa/movie-tracker" --format "{{.ID}}" | xargs -r docker rmi -f || true
+      - name: Remove Old Docker Images
+        run: |
+          docker rmi -f $(docker images --filter "reference=bukanasa/kitabantu-backend-mobile" --filter "reference=bukanasa/socket-server" --format "{{.ID}}") || true
 
       - name: Run Docker
-        run: docker compose --env-file ./.env -f ~/program/movie-tracker/docker/docker-compose.yml up -d
+        run: docker compose --env-file ./.env -f ~/program/kita-bantu-mobile-be/docker-compose.yml up -d
