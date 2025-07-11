@@ -51,6 +51,7 @@ jobs:
 
       - name: run rabbitmq container
         run: docker compose --env-file .env -f ./docker/docker-compose.yml up -d rabbitmq
+
       - name: Install dependencies with Composer
         run: |
           sleep 5
