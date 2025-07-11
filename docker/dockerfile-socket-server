@@ -10,8 +10,8 @@ ENV WORKDIR /app
 WORKDIR $WORKDIR
 
 # copy source from host to docker container
-COPY . ./socket-server
-COPY ../../.env .env
+COPY docker/socket-server ./socket-server
+COPY .env  .env
 # install dependencies project
 WORKDIR $WORKDIR/socket-server/
 RUN go mod download
