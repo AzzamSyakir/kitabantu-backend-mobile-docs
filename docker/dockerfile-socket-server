@@ -1,6 +1,5 @@
 #start from golang base image
-FROM alpine:3.22.0
-
+FROM golang:1.24.5-alpine
 #install dependencies
 RUN apk update
 RUN apk add --no-cache git build-base
@@ -11,8 +10,8 @@ ENV WORKDIR /app
 WORKDIR $WORKDIR
 
 # copy source from host to docker container
-COPY . ./socket-server
-COPY ../../.env .env
+COPY docker/socket-server ./socket-server
+COPY .env  .env
 # install dependencies project
 WORKDIR $WORKDIR/socket-server/
 RUN go mod download

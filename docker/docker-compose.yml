@@ -39,8 +39,8 @@ services:
             retries: 20
     socket-server:
         build:
-            context: ./socket-server
-            dockerfile: dockerfile-socket-server
+            context: ../
+            dockerfile: docker/dockerfile-socket-server
         container_name: socket-server
         restart: always
         tty: true
