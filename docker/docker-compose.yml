@@ -82,7 +82,7 @@ services:
             REDIS_HOST: redis
         volumes:
             - ../.:/var/www/
-        command: /bin/sh -c "php artisan config:cache && php artisan migrate --force && php-fpm"
+        command: /bin/sh -c "sleep 5 && php artisan config:cache && php artisan migrate --force && php-fpm"
 
     nginx:
         image: nginx:alpine
