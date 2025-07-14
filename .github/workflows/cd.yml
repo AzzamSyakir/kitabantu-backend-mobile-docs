@@ -55,7 +55,10 @@ jobs:
 
       - name: Remove Old Docker Images
         run: |
-          docker rmi -f $(docker images --filter "reference=bukanasa/kitabantu-backend-mobile" --filter "reference=bukanasa/socket-server" --format "{{.ID}}") || true
+          docker images --format "{{.Repository}}:{{.Tag}} {{.ID}}" \
+            | grep '^bukanasa/kitabantu-backend' \
+            | awk '{print $2}' \
+            | xargs -r docker rmi -f || true
 
       - name: Run Docker
         run: docker compose --env-file ./.env -f ~/program/kita-bantu-mobile-be/docker-compose.yml up -d
