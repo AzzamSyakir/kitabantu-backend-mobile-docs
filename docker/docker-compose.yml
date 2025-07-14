@@ -57,14 +57,14 @@ services:
             - socket-data:/srv/logs
         ports:
             - ${SOCKET_PORT}:8080
-    ngrok:
-        image: ngrok/ngrok
-        container_name: ngrok
-        restart: always
-        network_mode: host
-        environment:
-        - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
-        command: http --domain=${NGROK_DOMAIN} ${NGROK_PORT}
+    # ngrok:
+    #     image: ngrok/ngrok
+    #     container_name: ngrok
+    #     restart: always
+    #     network_mode: host
+    #     environment:
+    #     - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+    #     command: http --domain=${NGROK_DOMAIN} ${NGROK_PORT}
 
     app:
         build:
@@ -97,7 +97,6 @@ services:
         volumes:
             - ./conf/nginx/conf.d:/etc/nginx/conf.d
             - ../.:/var/www/
-
 volumes:
     app-db:
     rabbitmq-data:
