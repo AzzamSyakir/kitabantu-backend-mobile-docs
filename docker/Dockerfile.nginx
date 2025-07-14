@@ -1,0 +1,5 @@
+# 1) Base image
+FROM nginx:stable-perl
+
+# 2) Copy config
+COPY  docker/conf/nginx/conf.d /etc/nginx/conf.d
