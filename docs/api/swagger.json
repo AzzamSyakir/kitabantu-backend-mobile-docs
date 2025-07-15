@@ -13,7 +13,7 @@
     "description": "GitHub Repository",
     "url": "https://github.com/AzzamSyakir/go-micro-services"
   },
-  "host": "localhost:8080",
+  "host": "localhost:8000",
   "basePath": "/",
   "schemes": [
     "http",
@@ -490,6 +490,303 @@
             "BearerAuth": []
           }
         ]
+      }
+    },
+    "/api/regions/domicile/{villageId}": {
+      "get": {
+        "tags": [
+          "Domicile"
+        ],
+        "summary": "Get full domicile string by village ID",
+        "operationId": "getDomicileByVillageId",
+        "description": "Returns a full string of domicile (village, district, regency, province) based on the provided village ID.",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "villageId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Village ID",
+            "x-example": "3674070004"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved full domicile address",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Successfully retrieved full domicile address"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "province": {
+                      "type": "string",
+                      "example": "BANTEN"
+                    },
+                    "regency": {
+                      "type": "string",
+                      "example": "KOTA TANGERANG SELATAN"
+                    },
+                    "district": {
+                      "type": "string",
+                      "example": "SERPONG UTARA"
+                    },
+                    "village": {
+                      "type": "string",
+                      "example": "PONDOK JAGUNG TIMUR"
+                    },
+                    "full_address": {
+                      "type": "string",
+                      "example": "PONDOK JAGUNG TIMUR, SERPONG UTARA, KOTA TANGERANG SELATAN, BANTEN"
+                    }
+                  }
+                },
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/regions/villages/{districtId}": {
+      "get": {
+        "tags": [
+          "Domicile"
+        ],
+        "summary": "Get list of villages by district ID",
+        "operationId": "getVillagesByDistrictId",
+        "description": "Returns a list of villages within the specified district.",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "districtId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "District ID",
+            "x-example": "3674070"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved list of villages",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Successfully retrieved list of villages"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "example": 3674070004
+                      },
+                      "district_id": {
+                        "type": "string",
+                        "example": "3674070"
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "PONDOK JAGUNG TIMUR"
+                      }
+                    }
+                  }
+                },
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/regions/districts/{regencyId}": {
+      "get": {
+        "tags": [
+          "Domicile"
+        ],
+        "summary": "Get list of districts by regency ID",
+        "operationId": "getDistrictsByRegencyId",
+        "description": "Returns a list of districts within the specified regency.",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "regencyId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Regency ID",
+            "x-example": "3674"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved list of districts",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Successfully retrieved list of districts"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "example": 3674070
+                      },
+                      "regency_id": {
+                        "type": "string",
+                        "example": "3674"
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "SERPONG UTARA"
+                      }
+                    }
+                  }
+                },
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/regions/regencies/{provinceId}": {
+      "get": {
+        "tags": [
+          "Domicile"
+        ],
+        "summary": "Get list of regencies by province ID",
+        "operationId": "getRegenciesByProvinceId",
+        "description": "Returns a list of regencies within the specified province.",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provinceId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Province ID",
+            "x-example": "36"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved list of regencies",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Successfully retrieved list of regencies"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "example": 3674
+                      },
+                      "province_id": {
+                        "type": "string",
+                        "example": "36"
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "KOTA TANGERANG SELATAN"
+                      }
+                    }
+                  }
+                },
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/regions/provinces": {
+      "get": {
+        "tags": [
+          "Domicile"
+        ],
+        "summary": "Get all provinces",
+        "operationId": "getAllProvinces",
+        "description": "Returns a list of all provinces in the system.",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved list of provinces",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Successfully retrieved list of provinces"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "example": 36
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "BANTEN"
+                      }
+                    }
+                  }
+                },
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/users": {
@@ -2108,168 +2405,6 @@
           },
           "404": {
             "description": "Order not found"
-          }
-        }
-      }
-    }
-  },
-  "definitions": {
-    "User": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "example": "uuid-user-id"
-        },
-        "name": {
-          "type": "string",
-          "example": "Example User"
-        },
-        "email": {
-          "type": "string",
-          "example": "example.user@example.com"
-        },
-        "balance": {
-          "type": "integer",
-          "example": 0
-        },
-        "created_at": {
-          "type": "string",
-          "example": "2025-01-29T11:23:30Z"
-        },
-        "updated_at": {
-          "type": "string",
-          "example": "2025-01-29T11:23:30Z"
-        }
-      }
-    },
-    "Category": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "example": "uuid-category-id"
-        },
-        "name": {
-          "type": "string",
-          "example": "Example Category"
-        },
-        "created_at": {
-          "type": "string",
-          "example": "2025-02-03T06:17:52Z"
-        },
-        "updated_at": {
-          "type": "string",
-          "example": "2025-02-03T06:17:52Z"
-        }
-      }
-    },
-    "Product": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "example": "uuid-product-id"
-        },
-        "sku": {
-          "type": "string",
-          "example": "SKU-EXAMPLE"
-        },
-        "name": {
-          "type": "string",
-          "example": "Example Product"
-        },
-        "stock": {
-          "type": "integer",
-          "example": 100
-        },
-        "price": {
-          "type": "integer",
-          "example": 7000
-        },
-        "category_id": {
-          "type": "string",
-          "example": "uuid-category-id"
-        },
-        "created_at": {
-          "type": "string",
-          "example": "2025-02-03T06:22:36Z"
-        },
-        "updated_at": {
-          "type": "string",
-          "example": "2025-02-03T06:22:36Z"
-        }
-      }
-    },
-    "Order": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "example": "uuid-order-id"
-        },
-        "user_id": {
-          "type": "string",
-          "example": "uuid-user-id"
-        },
-        "receipt_code": {
-          "type": "string",
-          "example": "RECEIPT-123"
-        },
-        "total_price": {
-          "type": "integer",
-          "example": 14000
-        },
-        "total_paid": {
-          "type": "integer",
-          "example": 20000
-        },
-        "total_return": {
-          "type": "integer",
-          "example": 6000
-        },
-        "created_at": {
-          "type": "string",
-          "example": "2025-02-03T06:46:36Z"
-        },
-        "updated_at": {
-          "type": "string",
-          "example": "2025-02-03T06:46:36Z"
-        },
-        "products": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string",
-                "example": "uuid-product-item-id"
-              },
-              "user_id": {
-                "type": "string",
-                "example": "uuid-user-id"
-              },
-              "product_id": {
-                "type": "string",
-                "example": "uuid-product-id"
-              },
-              "total_price": {
-                "type": "integer",
-                "example": 14000
-              },
-              "qty": {
-                "type": "integer",
-                "example": 1
-              },
-              "created_at": {
-                "type": "string",
-                "example": "2025-02-03T06:46:36Z"
-              },
-              "updated_at": {
-                "type": "string",
-                "example": "2025-02-03T06:46:36Z"
-              }
-            }
           }
         }
       }
