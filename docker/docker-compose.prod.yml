@@ -1,0 +1,88 @@
+services:
+    app-db:
+        image: mysql:8.0.41-debian
+        container_name: app-db
+        restart: always
+        tty: true
+        environment:
+            MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+            MYSQL_USER: ${DB_USERNAME}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_DATABASE: ${DB_DATABASE}
+        ports:
+            - ${DB_PORT}:3306
+        volumes:
+            - app-db:/var/lib/mysql
+    redis:
+        image: redis:latest
+        container_name: redis
+        restart: always
+        ports:
+            - ${REDIS_PORT}:6379
+        volumes:
+            - redis-data:/data
+    rabbitmq:
+        image: rabbitmq:management
+        container_name: rabbitmq
+        restart: unless-stopped
+        ports:
+            - ${RABBITMQ_PORT}:5672
+            - ${RABBITMQ_MANAGEMENT_PORT}:15672
+        environment:
+            RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+            RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+        volumes:
+            - rabbitmq-data:/var/lib/rabbitmq/
+        healthcheck:
+            test: rabbitmq-diagnostics check_port_connectivity
+            interval: 5s
+            retries: 20
+    socket-server:
+        image: bukanasa/kitabantu-backend:socket
+        container_name: socket-server
+        restart: always
+        tty: true
+        depends_on:
+            - redis
+        environment:
+            REDIS_HOST: redis
+            REDIS_PORT: ${REDIS_PORT}
+            SOCKET_REDIS_DB: ${SOCKET_REDIS_DB}
+            SOCKET_CHANNEL: ${SOCKET_CHANNEL}
+            SOCKET_PORT: ${SOCKET_PORT}
+            SOCKET_CORS_ORIGIN: ${SOCKET_CORS_ORIGIN}
+        volumes:
+            - socket-data:/srv/logs
+        ports:
+            - ${SOCKET_PORT}:8080
+
+    app:
+        image: bukanasa/kitabantu-backend:app
+        container_name: app
+        restart: always
+        tty: true
+        depends_on:
+            - app-db
+            - rabbitmq
+        environment:
+            RABBITMQ_HOST: rabbitmq
+            DB_HOST: app-db
+            REDIS_HOST: redis
+        command: /bin/sh -c "sleep 5 && php artisan config:cache && php artisan migrate --force && php-fpm"
+
+    nginx:
+        image: bukanasa/kitabantu-backend:nginx
+        container_name: nginx
+        restart: unless-stopped
+        tty: true
+        depends_on:
+            - app
+        ports:
+            - "${APP_HTTP_PORT}:80"
+            - "${APP_SSL_PORT}:443"
+
+volumes:
+    app-db:
+    rabbitmq-data:
+    redis-data:
+    socket-data:
