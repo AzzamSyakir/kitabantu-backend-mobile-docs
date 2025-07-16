@@ -40,7 +40,7 @@ class RabbitMqHelper
 
   protected function GetQueueList(): array
   {
-    $raw = env('RABBITMQ_QUEUE_NAMES', '');
+    $raw = config('rabbitmq.queue_names', '');
     $items = preg_split('/[\s,]+/', $raw, -1, PREG_SPLIT_NO_EMPTY);
     return array_filter(array_map('trim', $items));
   }
