@@ -36,15 +36,15 @@
   "tags": [
     {
       "name": "Authentication",
-      "description": "Endpoints related to user authentication, including sign up, sign in, token handling, and token management."
+      "description": "Endpoints related to user authentication, including sign-up, sign-in, token generation, validation, and management."
     },
     {
       "name": "Domicile",
-      "description": "Provides domicile data (from province to village) across Indonesia. Used during user registration and service ordering to ensure accurate user location selection."
+      "description": "Endpoints providing hierarchical domicile data across Indonesia (province to village). Used in user registration and service-related processes to ensure precise location selection."
     },
     {
-      "name": "Users",
-      "description": "User management endpoints."
+      "name": "Orders",
+      "description": "Endpoints related to order management, including orders, handling reviews, complaints, and negotiations."
     },
     {
       "name": "Categories",
@@ -789,1417 +789,155 @@
         }
       }
     },
-    "/users": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "List all users",
-        "operationId": "getAllUsers",
-        "description": "Returns a list of all registered users.",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully retrieved all users.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "example": 200
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Successfully retrieved all users."
-                },
-                "data": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string",
-                        "example": "b740369b-8957-4f36-b7ed-b0b8e1d07caf"
-                      },
-                      "name": {
-                        "type": "string",
-                        "example": "Example User"
-                      },
-                      "email": {
-                        "type": "string",
-                        "example": "example.user@example.com"
-                      },
-                      "password": {
-                        "type": "string",
-                        "example": "$2a$10$wHCIdkxeK91Kmup0Pjt6xeu3rtqm7NXeiVbAgO5Q1z/wCkznWlTSi"
-                      },
-                      "balance": {
-                        "type": "integer",
-                        "example": 0
-                      },
-                      "created_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2025-03-03T02:39:54.741293Z"
-                      },
-                      "updated_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2025-03-03T02:39:54.741293Z"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/users/email/{email}": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "Get user by Email",
-        "operationId": "getUserByEmail",
-        "description": "Get user details based on the provided Email.",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "email",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "x-example": "example.user@example.com"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "User retrieved successfully by email.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "example": 200
-                },
-                "message": {
-                  "type": "string",
-                  "example": "User retrieved successfully by email."
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "example": "b740369b-8957-4f36-b7ed-b0b8e1d07caf"
-                    },
-                    "name": {
-                      "type": "string",
-                      "example": "Example User"
-                    },
-                    "email": {
-                      "type": "string",
-                      "example": "example.user@example.com"
-                    },
-                    "password": {
-                      "type": "string",
-                      "example": "$2a$10$wHCIdkxeK91Kmup0Pjt6xeu3rtqm7NXeiVbAgO5Q1z/wCkznWlTSi"
-                    },
-                    "balance": {
-                      "type": "integer",
-                      "example": 0
-                    },
-                    "created_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-03-03T02:39:54.741293Z"
-                    },
-                    "updated_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-03-03T02:39:54.741293Z"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "User not found"
-          }
-        }
-      }
-    },
-    "/users/{userId}": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "Get user by ID",
-        "operationId": "getUserById",
-        "description": "Get user details based on the provided user ID.",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "x-example": "b740369b-8957-4f36-b7ed-b0b8e1d07caf"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "User retrieved successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "example": 200
-                },
-                "message": {
-                  "type": "string",
-                  "example": "User retrieved successfully."
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "example": "b740369b-8957-4f36-b7ed-b0b8e1d07caf"
-                    },
-                    "name": {
-                      "type": "string",
-                      "example": "Example User"
-                    },
-                    "email": {
-                      "type": "string",
-                      "example": "example.user@example.com"
-                    },
-                    "password": {
-                      "type": "string",
-                      "example": "$2a$10$wHCIdkxeK91Kmup0Pjt6xeu3rtqm7NXeiVbAgO5Q1z/wCkznWlTSi"
-                    },
-                    "balance": {
-                      "type": "integer",
-                      "example": 0
-                    },
-                    "created_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-03-03T02:39:54.741293Z"
-                    },
-                    "updated_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-03-03T02:39:54.741293Z"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "User not found"
-          }
-        }
-      },
-      "patch": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "Update user details",
-        "operationId": "updateUser",
-        "description": "Update user details based on the provided user ID.",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "x-example": "b740369b-8957-4f36-b7ed-b0b8e1d07caf"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "example": "Example Update User"
-                },
-                "email": {
-                  "type": "string",
-                  "example": "example.user@example.com"
-                },
-                "password": {
-                  "type": "string",
-                  "example": "$2a$10$wHCIdkxeK91Kmup0Pjt6xeu3rtqm7NXeiVbAgO5Q1z/wCkznWlTSi"
-                },
-                "balance": {
-                  "type": "integer",
-                  "example": 10000000
-                }
-              },
-              "required": [
-                "name",
-                "email",
-                "balance"
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "User updated successfully",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "example": 200
-                },
-                "message": {
-                  "type": "string",
-                  "example": "User updated successfully."
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "example": "b740369b-8957-4f36-b7ed-b0b8e1d07caf"
-                    },
-                    "name": {
-                      "type": "string",
-                      "example": "Example User"
-                    },
-                    "email": {
-                      "type": "string",
-                      "example": "example.user@example.com"
-                    },
-                    "password": {
-                      "type": "string",
-                      "example": "$2a$10$wHCIdkxeK91Kmup0Pjt6xeu3rtqm7NXeiVbAgO5Q1z/wCkznWlTSi"
-                    },
-                    "balance": {
-                      "type": "integer",
-                      "example": 10000000
-                    },
-                    "created_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-03-03T02:39:54.741293Z"
-                    },
-                    "updated_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-03-03T03:54:01.051294888Z"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "User not found"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "Delete user",
-        "operationId": "deleteUser",
-        "description": "Delete user based on the provided user ID.",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "x-example": "b740369b-8957-4f36-b7ed-b0b8e1d07caf"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "User deleted successfully",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "example": 200
-                },
-                "message": {
-                  "type": "string",
-                  "example": "User has been successfully deleted."
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "example": "b740369b-8957-4f36-b7ed-b0b8e1d07caf"
-                    },
-                    "name": {
-                      "type": "string",
-                      "example": "Example User"
-                    },
-                    "email": {
-                      "type": "string",
-                      "example": "example.user@example.com"
-                    },
-                    "password": {
-                      "type": "string",
-                      "example": "$2a$10$wHCIdkxeK91Kmup0Pjt6xeu3rtqm7NXeiVbAgO5Q1z/wCkznWlTSi"
-                    },
-                    "balance": {
-                      "type": "integer",
-                      "example": 10000000
-                    },
-                    "created_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-03-03T02:39:54.741293Z"
-                    },
-                    "updated_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-03-03T03:54:01.051295Z"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "User not found"
-          }
-        }
-      }
-    },
-    "/categories": {
-      "post": {
-        "tags": [
-          "Categories"
-        ],
-        "summary": "Create a new category",
-        "operationId": "createCategory",
-        "description": "Registers a new category.",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "example": "Example Category"
-                }
-              },
-              "required": [
-                "name"
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Category created successfully",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "example": 201
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Category Created Successfully"
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "example": "2111a162-a912-454d-aaf0-0feeafe60d9f"
-                    },
-                    "name": {
-                      "type": "string",
-                      "example": "example category"
-                    },
-                    "created_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-03-03T06:11:47.988013891Z"
-                    },
-                    "updated_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-03-03T06:11:47.988013891Z"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "Categories"
-        ],
-        "summary": "Get List Category",
-        "operationId": "ListCategories",
-        "description": "Retrieve a list of categories.",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully retrieved category list.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "example": 200
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Successfully retrieved category list."
-                },
-                "data": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string",
-                        "example": "2111a162-a912-454d-aaf0-0feeafe60d9f"
-                      },
-                      "name": {
-                        "type": "string",
-                        "example": "example category"
-                      },
-                      "created_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2025-03-03T06:11:47.988014Z"
-                      },
-                      "updated_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2025-03-03T06:11:47.988014Z"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/categories/{id}": {
-      "get": {
-        "tags": [
-          "Categories"
-        ],
-        "summary": "Get category by ID",
-        "operationId": "getCategoryById",
-        "description": "Retrieves category details based on the provided ID.",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "x-example": "2111a162-a912-454d-aaf0-0feeafe60d9f"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Category retrieved successfully",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "example": 200
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Category retrieved successfully"
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "example": "2111a162-a912-454d-aaf0-0feeafe60d9f"
-                    },
-                    "name": {
-                      "type": "string",
-                      "example": "example category"
-                    },
-                    "created_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-03-03T06:11:47.988014Z"
-                    },
-                    "updated_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-03-03T06:11:47.988014Z"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Category not found"
-          }
-        }
-      },
-      "patch": {
-        "tags": [
-          "Categories"
-        ],
-        "summary": "Update an existing category",
-        "operationId": "updateCategory",
-        "description": "Updates an existing category by ID.",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "x-example": "7c9028c2-fd8a-40e8-b42f-c6112cee382c"
-          },
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "example": "example updated category"
-                }
-              },
-              "required": [
-                "name"
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Category updated successfully",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "example": 200
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Category updated successfully."
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "example": "7c9028c2-fd8a-40e8-b42f-c6112cee382c"
-                    },
-                    "name": {
-                      "type": "string",
-                      "example": "example updated category"
-                    },
-                    "created_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-03-03T06:39:10.95694Z"
-                    },
-                    "updated_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-03-03T06:39:12.646837852Z"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Category not found"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Categories"
-        ],
-        "summary": "Delete a category",
-        "operationId": "deleteCategory",
-        "description": "Deletes a category by ID.",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "x-example": "8aa955d4-3c6a-4d80-943c-6800cdbe4bdc"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Category deleted successfully",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "example": 200
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Category deleted successfully."
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "example": "8aa955d4-3c6a-4d80-943c-6800cdbe4bdc"
-                    },
-                    "name": {
-                      "type": "string",
-                      "example": "example category"
-                    },
-                    "created_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-03-03T06:34:46.547866Z"
-                    },
-                    "updated_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-03-03T06:34:46.547866Z"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Category not found"
-          }
-        }
-      }
-    },
-    "/products": {
-      "post": {
-        "tags": [
-          "Products"
-        ],
-        "summary": "Create a new product",
-        "operationId": "createProduct",
-        "description": "Creates a new product.",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "sku": {
-                  "type": "string",
-                  "example": "E256"
-                },
-                "name": {
-                  "type": "string",
-                  "example": "example product"
-                },
-                "stock": {
-                  "type": "integer",
-                  "example": 100
-                },
-                "price": {
-                  "type": "integer",
-                  "example": 7000
-                },
-                "category_id": {
-                  "type": "string",
-                  "example": "7c9028c2-fd8a-40e8-b42f-c6112cee382c"
-                }
-              },
-              "required": [
-                "sku",
-                "name",
-                "stock",
-                "price",
-                "category_id"
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Product created successfully",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "example": 201
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Product created successfully."
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "example": "f99116f7-dd32-4672-b99c-e125e867910e"
-                    },
-                    "sku": {
-                      "type": "string",
-                      "example": "E256"
-                    },
-                    "name": {
-                      "type": "string",
-                      "example": "example product"
-                    },
-                    "stock": {
-                      "type": "integer",
-                      "example": 100
-                    },
-                    "price": {
-                      "type": "integer",
-                      "example": 7000
-                    },
-                    "category_id": {
-                      "type": "string",
-                      "example": "7c9028c2-fd8a-40e8-b42f-c6112cee382c"
-                    },
-                    "created_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-03-03T06:55:22.83409818Z"
-                    },
-                    "updated_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-03-03T06:55:22.83409818Z"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "Products"
-        ],
-        "summary": "Retrieve all products",
-        "operationId": "getAllProducts",
-        "description": "Returns a list of all products.",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Product list retrieved successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "example": 200
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Product list retrieved successfully."
-                },
-                "data": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string",
-                        "example": "f99116f7-dd32-4672-b99c-e125e867910e"
-                      },
-                      "sku": {
-                        "type": "string",
-                        "example": "E256"
-                      },
-                      "name": {
-                        "type": "string",
-                        "example": "example product"
-                      },
-                      "stock": {
-                        "type": "integer",
-                        "example": 100
-                      },
-                      "price": {
-                        "type": "integer",
-                        "example": 7000
-                      },
-                      "category_id": {
-                        "type": "string",
-                        "example": "7c9028c2-fd8a-40e8-b42f-c6112cee382c"
-                      },
-                      "created_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2025-03-03T06:55:22.834098Z"
-                      },
-                      "updated_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2025-03-03T06:55:22.834098Z"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/products/{id}": {
-      "get": {
-        "tags": [
-          "Products"
-        ],
-        "summary": "Get product by ID",
-        "operationId": "getProductById",
-        "description": "Retrieves product details based on the provided ID.",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "x-example": "f99116f7-dd32-4672-b99c-e125e867910e"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Product details retrieved successfully",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "example": 200
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Product details retrieved successfully"
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "example": "f99116f7-dd32-4672-b99c-e125e867910e"
-                    },
-                    "sku": {
-                      "type": "string",
-                      "example": "E256"
-                    },
-                    "name": {
-                      "type": "string",
-                      "example": "example product"
-                    },
-                    "stock": {
-                      "type": "integer",
-                      "example": 100
-                    },
-                    "price": {
-                      "type": "integer",
-                      "example": 7000
-                    },
-                    "category_id": {
-                      "type": "string",
-                      "example": "7c9028c2-fd8a-40e8-b42f-c6112cee382c"
-                    },
-                    "created_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-03-03T06:55:22.834098Z"
-                    },
-                    "updated_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-03-03T06:55:22.834098Z"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Product not found"
-          }
-        }
-      },
-      "patch": {
-        "tags": [
-          "Products"
-        ],
-        "summary": "Update an existing product",
-        "operationId": "updateProduct",
-        "description": "Updates an existing product by ID.",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "x-example": "f99116f7-dd32-4672-b99c-e125e867910e"
-          },
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "sku": {
-                  "type": "string",
-                  "example": "SKU-UPDATED"
-                },
-                "name": {
-                  "type": "string",
-                  "example": "example update product"
-                },
-                "stock": {
-                  "type": "integer",
-                  "example": 100
-                },
-                "price": {
-                  "type": "integer",
-                  "example": 7000
-                }
-              },
-              "required": [
-                "sku",
-                "name",
-                "stock",
-                "price",
-                "category_id"
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Product updated successfully",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "example": 200
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Product updated successfully."
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "example": "f99116f7-dd32-4672-b99c-e125e867910e"
-                    },
-                    "sku": {
-                      "type": "string",
-                      "example": "E256"
-                    },
-                    "name": {
-                      "type": "string",
-                      "example": "example update product"
-                    },
-                    "stock": {
-                      "type": "integer",
-                      "example": 100
-                    },
-                    "price": {
-                      "type": "integer",
-                      "example": 7000
-                    },
-                    "category_id": {
-                      "type": "string",
-                      "example": "7c9028c2-fd8a-40e8-b42f-c6112cee382c"
-                    },
-                    "created_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-03-03T06:55:22.834098Z"
-                    },
-                    "updated_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-03-03T06:58:49.076601703Z"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Product not found"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Products"
-        ],
-        "summary": "Delete a product",
-        "operationId": "deleteProduct",
-        "description": "Deletes a product by ID.",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "x-example": "3be4c34b-cf94-47f4-b9af-8f2139b259ea"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Product deleted successfully",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "integer",
-                  "example": 200
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Product has been successfully deleted."
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "example": "3be4c34b-cf94-47f4-b9af-8f2139b259ea"
-                    },
-                    "sku": {
-                      "type": "string",
-                      "example": "example product"
-                    },
-                    "name": {
-                      "type": "string",
-                      "example": "E930"
-                    },
-                    "stock": {
-                      "type": "integer",
-                      "example": 100
-                    },
-                    "price": {
-                      "type": "integer",
-                      "example": 7000
-                    },
-                    "category_id": {
-                      "type": "string",
-                      "example": "7c9028c2-fd8a-40e8-b42f-c6112cee382c"
-                    },
-                    "created_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-03-03T07:00:00.181402Z"
-                    },
-                    "updated_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-03-03T07:00:00.181402Z"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Product not found"
-          }
-        }
-      }
-    },
-    "/orders": {
+    "/api/orders": {
       "post": {
         "tags": [
           "Orders"
         ],
         "summary": "Create a new order",
-        "operationId": "createOrder",
-        "description": "Creates a new order.",
-        "security": [
-          {
-            "BearerAuth": []
-          }
+        "operationId": "CreateOrder",
+        "description": "create an order for a freelancer. Also triggers a RabbitMQ message to sync data between client and freelancer databases",
+        "produces": [
+          "application/json"
         ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "total_paid": {
-                  "type": "string",
-                  "example": "20000"
-                },
-                "user_id": {
-                  "type": "string",
-                  "example": "568814d8-6c42-426e-a552-cbbec50ee4bb"
-                },
-                "products": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "productId": {
-                        "type": "string",
-                        "example": "75e42c2e-c245-48b4-b6f9-30d23e47fe55"
-                      },
-                      "qty": {
-                        "type": "integer",
-                        "example": 1
-                      }
-                    },
-                    "required": [
-                      "productId",
-                      "qty",
-                      "total_paid"
-                    ]
-                  }
-                }
-              },
-              "required": [
-                "user_id",
-                "products"
-              ]
-            }
-          }
-        ],
+        "parameters": [],
         "responses": {
           "201": {
-            "description": "Order created successfully",
+            "description": "Order successfully created",
             "schema": {
               "type": "object",
               "properties": {
-                "code": {
-                  "type": "integer",
-                  "example": 201
-                },
                 "message": {
                   "type": "string",
-                  "example": "Order created successfully."
+                  "example": "Order created successfully"
+                },
+                "data": {
+                  "type": "object",
+                  "example": {
+                    "id": "581a568b-48bb-4951-8d92-ee51ff10c0f2",
+                    "client_id": "39632c89-5bf6-4f19-908b-f43cdd61fdba",
+                    "freelancer_id": "f963b760-d38d-47f6-b1db-6811118f83ef",
+                    "work_location": "PONDOK JAGUNG TIMUR, SERPONG UTARA, KOTA TANGERANG SELATAN, BANTEN",
+                    "work_start_time": "2025-05-06T05:00:00.000000Z",
+                    "work_end_time": "2025-05-06T20:00:00.000000Z",
+                    "estimated_travel_time": "2",
+                    "hourly_rate": "50000.00",
+                    "total_cost": "751666.67",
+                    "updated_at": "2025-06-16T09:46:22.000000Z",
+                    "created_at": "2025-06-16T09:46:22.000000Z",
+                    "freelancer": null,
+                    "client": {
+                      "id": "39632c89-5bf6-4f19-908b-f43cdd61fdba",
+                      "email": "azzamsykir@gmail.com",
+                      "auth_method": "manual",
+                      "email_verified": 1,
+                      "email_verified_at": "2025-06-16 09:43:52",
+                      "created_at": "2025-06-16T09:43:28.000000Z",
+                      "updated_at": "2025-06-16T09:43:52.000000Z"
+                    }
+                  }
+                },
+                "status_code": {
+                  "type": "integer",
+                  "example": 201
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/orders/reviews": {
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Create a new review",
+        "operationId": "CreateReview",
+        "description": "Submits a review for an order by a client.",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Review successfully created",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Review has been successfully created."
                 },
                 "data": {
                   "type": "object",
                   "properties": {
                     "id": {
                       "type": "string",
-                      "example": "e6fd0e76-f4c2-4969-bfd7-1b8b28c3440c"
+                      "format": "uuid",
+                      "example": "6d86a00e-e0b0-4f14-b3ce-da64f7de3baf"
                     },
-                    "user_id": {
+                    "order_id": {
                       "type": "string",
-                      "example": "568814d8-6c42-426e-a552-cbbec50ee4bb"
+                      "format": "uuid",
+                      "example": "791e9bc6-8d90-4b72-afc5-e9875af19998"
                     },
-                    "receipt_code": {
+                    "rating_star": {
                       "type": "string",
-                      "example": "C108"
+                      "example": "5"
                     },
-                    "total_price": {
-                      "type": "integer",
-                      "example": 7000
-                    },
-                    "total_paid": {
-                      "type": "integer",
-                      "example": 20000
-                    },
-                    "total_return": {
-                      "type": "integer",
-                      "example": 13000
-                    },
-                    "created_at": {
+                    "rating_text": {
                       "type": "string",
-                      "format": "date-time",
-                      "example": "2025-03-03T09:32:11.471529623Z"
+                      "example": "ok bagus"
+                    },
+                    "review_file_url": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "http://localhost:8000/storage/review_file/n4IG8VoaD2Tcxlxe1c5coOMNjMQvg4rI0zty4NJP.jpg"
                     },
                     "updated_at": {
                       "type": "string",
                       "format": "date-time",
-                      "example": "2025-03-03T09:32:11.471529783Z"
+                      "example": "2025-07-16T07:38:10.000000Z"
                     },
-                    "products": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "example": "ee9d9b8f-2cca-4941-93df-398e69339526"
-                          },
-                          "user_id": {
-                            "type": "string",
-                            "example": "e6fd0e76-f4c2-4969-bfd7-1b8b28c3440c"
-                          },
-                          "product_id": {
-                            "type": "string",
-                            "example": "75e42c2e-c245-48b4-b6f9-30d23e47fe55"
-                          },
-                          "total_price": {
-                            "type": "integer",
-                            "example": 7000
-                          },
-                          "qty": {
-                            "type": "integer",
-                            "example": 1
-                          },
-                          "created_at": {
-                            "type": "string",
-                            "format": "date-time",
-                            "example": "2025-03-03T09:32:11.473435019Z"
-                          },
-                          "updated_at": {
-                            "type": "string",
-                            "format": "date-time",
-                            "example": "2025-03-03T09:32:11.473435327Z"
-                          }
-                        }
-                      }
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-07-16T07:38:10.000000Z"
                     }
                   }
+                },
+                "status_code": {
+                  "type": "integer",
+                  "example": 201
                 }
               }
             }
           }
         }
-      },
+      }
+    },
+    "/api/orders/reviews/client": {
       "get": {
         "tags": [
           "Orders"
         ],
-        "summary": "Retrieve all orders",
-        "operationId": "getAllOrders",
-        "description": "Returns a list of all orders.",
-        "security": [
-          {
-            "BearerAuth": []
-          }
+        "summary": "Get reviews by client ID",
+        "operationId": "GetReviewByClientId",
+        "description": "Returns a list of reviews created by the client.",
+        "produces": [
+          "application/json"
         ],
+        "parameters": [],
         "responses": {
           "200": {
-            "description": "List of orders",
+            "description": "Reviews retrieved successfully.",
             "schema": {
               "type": "object",
               "properties": {
-                "code": {
-                  "type": "integer",
-                  "example": 200
-                },
                 "message": {
                   "type": "string",
-                  "example": "Successfully retrieved all orders."
+                  "example": "Reviews retrieved successfully."
                 },
                 "data": {
                   "type": "array",
@@ -2208,78 +946,43 @@
                     "properties": {
                       "id": {
                         "type": "string",
-                        "example": "a46c4525-7196-43b9-88d4-8924a4993abb"
+                        "format": "uuid",
+                        "example": "6d86a00e-e0b0-4f14-b3ce-da64f7de3baf"
                       },
-                      "user_id": {
+                      "order_id": {
                         "type": "string",
-                        "example": "568814d8-6c42-426e-a552-cbbec50ee4bb"
+                        "format": "uuid",
+                        "example": "791e9bc6-8d90-4b72-afc5-e9875af19998"
                       },
-                      "receipt_code": {
+                      "rating_star": {
+                        "type": "integer",
+                        "example": 5
+                      },
+                      "rating_text": {
                         "type": "string",
-                        "example": "C155"
+                        "example": "ok bagus"
                       },
-                      "total_price": {
-                        "type": "integer",
-                        "example": 7000
-                      },
-                      "total_paid": {
-                        "type": "integer",
-                        "example": 20000
-                      },
-                      "total_return": {
-                        "type": "integer",
-                        "example": 13000
+                      "review_file_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "http://localhost:8000/storage/review_file/n4IG8VoaD2Tcxlxe1c5coOMNjMQvg4rI0zty4NJP.jpg"
                       },
                       "created_at": {
                         "type": "string",
                         "format": "date-time",
-                        "example": "2025-03-03T09:54:05.246685Z"
+                        "example": "2025-07-16T07:38:10.000000Z"
                       },
                       "updated_at": {
                         "type": "string",
                         "format": "date-time",
-                        "example": "2025-03-03T09:54:05.246685Z"
-                      },
-                      "products": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "id": {
-                              "type": "string",
-                              "example": "5875486d-cfea-4f67-af14-842092b5c3f8"
-                            },
-                            "user_id": {
-                              "type": "string",
-                              "example": "a46c4525-7196-43b9-88d4-8924a4993abb"
-                            },
-                            "product_id": {
-                              "type": "string",
-                              "example": "75e42c2e-c245-48b4-b6f9-30d23e47fe55"
-                            },
-                            "total_price": {
-                              "type": "integer",
-                              "example": 7000
-                            },
-                            "qty": {
-                              "type": "integer",
-                              "example": 1
-                            },
-                            "created_at": {
-                              "type": "string",
-                              "format": "date-time",
-                              "example": "2025-03-03T09:54:05.247091Z"
-                            },
-                            "updated_at": {
-                              "type": "string",
-                              "format": "date-time",
-                              "example": "2025-03-03T09:54:05.247091Z"
-                            }
-                          }
-                        }
+                        "example": "2025-07-16T07:38:10.000000Z"
                       }
                     }
                   }
+                },
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
                 }
               }
             }
@@ -2287,124 +990,333 @@
         }
       }
     },
-    "/orders/{id}": {
-      "get": {
+    "/api/orders/complaints": {
+      "post": {
         "tags": [
           "Orders"
         ],
-        "summary": "Get order by ID",
-        "operationId": "getOrderById",
-        "description": "Retrieves order details based on the provided ID.",
-        "security": [
-          {
-            "BearerAuth": []
-          }
+        "summary": "Create a new complaint",
+        "operationId": "CreateComplaint",
+        "description": "Submits a complaint related to an order.",
+        "produces": [
+          "application/json"
         ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "x-example": "a46c4525-7196-43b9-88d4-8924a4993abb"
-          }
-        ],
+        "parameters": [],
         "responses": {
-          "200": {
-            "description": "Order details retrieved successfully",
+          "201": {
+            "description": "Create Complaint Success.",
             "schema": {
               "type": "object",
               "properties": {
-                "code": {
-                  "type": "integer",
-                  "example": 200
-                },
                 "message": {
                   "type": "string",
-                  "example": "Successfully retrieved order details."
+                  "example": "Create Complaint Success."
                 },
                 "data": {
                   "type": "object",
                   "properties": {
                     "id": {
                       "type": "string",
-                      "example": "a46c4525-7196-43b9-88d4-8924a4993abb"
+                      "format": "uuid",
+                      "example": "1c16078e-dd74-4518-8b28-6a674966a865"
                     },
-                    "user_id": {
+                    "order_id": {
                       "type": "string",
-                      "example": "568814d8-6c42-426e-a552-cbbec50ee4bb"
+                      "format": "uuid",
+                      "example": "791e9bc6-8d90-4b72-afc5-e9875af19998"
                     },
-                    "receipt_code": {
+                    "complaint_type": {
                       "type": "string",
-                      "example": "C155"
+                      "example": "pekerjaan_tidak_selesai"
                     },
-                    "total_price": {
-                      "type": "integer",
-                      "example": 7000
-                    },
-                    "total_paid": {
-                      "type": "integer",
-                      "example": 20000
-                    },
-                    "total_return": {
-                      "type": "integer",
-                      "example": 13000
-                    },
-                    "created_at": {
+                    "description": {
                       "type": "string",
-                      "format": "date-time",
-                      "example": "2025-03-03T09:54:05.246685Z"
+                      "example": "pekerjaan nggak selesai,freelancer kabur"
+                    },
+                    "evidence_url": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "http://localhost:8000/storage/complaint_evidence/1c16078e-dd74-4518-8b28-6a674966a865_evidence.jpg"
+                    },
+                    "contact_info": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "example": null
                     },
                     "updated_at": {
                       "type": "string",
                       "format": "date-time",
-                      "example": "2025-03-03T09:54:05.246685Z"
+                      "example": "2025-07-16T07:43:29.000000Z"
                     },
-                    "products": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "example": "5875486d-cfea-4f67-af14-842092b5c3f8"
-                          },
-                          "user_id": {
-                            "type": "string",
-                            "example": "a46c4525-7196-43b9-88d4-8924a4993abb"
-                          },
-                          "product_id": {
-                            "type": "string",
-                            "example": "75e42c2e-c245-48b4-b6f9-30d23e47fe55"
-                          },
-                          "total_price": {
-                            "type": "integer",
-                            "example": 7000
-                          },
-                          "qty": {
-                            "type": "integer",
-                            "example": 1
-                          },
-                          "created_at": {
-                            "type": "string",
-                            "format": "date-time",
-                            "example": "2025-03-03T09:54:05.247091Z"
-                          },
-                          "updated_at": {
-                            "type": "string",
-                            "format": "date-time",
-                            "example": "2025-03-03T09:54:05.247091Z"
-                          }
-                        }
-                      }
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-07-16T07:43:29.000000Z"
                     }
                   }
+                },
+                "status_code": {
+                  "type": "integer",
+                  "example": 201
                 }
               }
             }
-          },
-          "404": {
-            "description": "Order not found"
+          }
+        }
+      }
+    },
+    "/api/orders/complaints/client": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Get complaints by client ID",
+        "operationId": "GetComplaintByClientId",
+        "description": "Returns a list of complaints created by the client.",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Complaints retrieved successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Complaints retrieved successfully."
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "1c16078e-dd74-4518-8b28-6a674966a865"
+                      },
+                      "order_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "791e9bc6-8d90-4b72-afc5-e9875af19998"
+                      },
+                      "complaint_type": {
+                        "type": "string",
+                        "example": "pekerjaan_tidak_selesai"
+                      },
+                      "description": {
+                        "type": "string",
+                        "example": "pekerjaan nggak selesai,freelancer kabur"
+                      },
+                      "evidence_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "http://localhost:8000/storage/complaint_evidence/1c16078e-dd74-4518-8b28-6a674966a865_evidence.jpg"
+                      },
+                      "event_time": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "format": "date-time",
+                        "example": null
+                      },
+                      "contact_info": {
+                        "type": [
+                          "string",
+                          "null"
+                        ],
+                        "example": null
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-07-16T07:43:29.000000Z"
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-07-16T07:43:29.000000Z"
+                      }
+                    }
+                  }
+                },
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/orders/negotiations": {
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Create a new negotiation",
+        "operationId": "CreateNegotiation",
+        "description": "Initiates a negotiation related to an order.",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Negotiation created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Negotiation created successfully."
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "order_id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "791e9bc6-8d90-4b72-afc5-e9875af19998"
+                    },
+                    "work_start_time": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-05-06T09:00:00.000000Z"
+                    },
+                    "work_end_time": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-05-06T17:00:00.000000Z"
+                    },
+                    "working_hours_duration": {
+                      "type": "string",
+                      "example": "8.00"
+                    },
+                    "hourly_rate": {
+                      "type": "string",
+                      "example": "150000.00"
+                    },
+                    "note": {
+                      "type": "string",
+                      "example": "Butuh tambahan waktu untuk revisi desain"
+                    },
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "c4a85167-661a-4823-95ea-669cbac1d1db"
+                    },
+                    "total_cost": {
+                      "type": "string",
+                      "example": "1200000.00"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-07-16T07:55:57.000000Z"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-07-16T07:55:57.000000Z"
+                    }
+                  }
+                },
+                "status_code": {
+                  "type": "integer",
+                  "example": 201
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/orders/negotiations/client": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Get negotiations by client ID",
+        "operationId": "GetNegotiationByClientId",
+        "description": "Returns a list of negotiations created by the client.",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Negotiation data retrieved successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Negotiation data retrieved successfully."
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "c4a85167-661a-4823-95ea-669cbac1d1db"
+                    },
+                    "order_id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "791e9bc6-8d90-4b72-afc5-e9875af19998"
+                    },
+                    "work_start_time": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-05-06T09:00:00.000000Z"
+                    },
+                    "work_end_time": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-05-06T17:00:00.000000Z"
+                    },
+                    "working_hours_duration": {
+                      "type": "string",
+                      "example": "8.00"
+                    },
+                    "hourly_rate": {
+                      "type": "string",
+                      "example": "150000.00"
+                    },
+                    "total_cost": {
+                      "type": "string",
+                      "example": "1200000.00"
+                    },
+                    "note": {
+                      "type": "string",
+                      "example": "Butuh tambahan waktu untuk revisi desain"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-07-16T07:55:57.000000Z"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-07-16T07:55:57.000000Z"
+                    }
+                  }
+                },
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                }
+              }
+            }
           }
         }
       }
