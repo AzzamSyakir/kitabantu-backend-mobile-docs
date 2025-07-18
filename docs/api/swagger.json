@@ -1,5 +1,5 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.1.0",
   "info": {
     "title": "KitaBantu Backend Mobile API",
     "description": "This project is a backend API for an ecommerce-like application built with PHP (Laravel). It provides user authentication using JWT and custom tokens, order management, real-time chat via WebSocket, payment integration using Midtrans, and message delivery between services using RabbitMQ.",
@@ -13,24 +13,800 @@
     "description": "GitHub Repository",
     "url": "https://github.com/AzzamSyakir/go-micro-services"
   },
-  "host": "localhost:8000",
-  "basePath": "/",
-  "schemes": [
-    "http",
-    "https"
+  "servers": [
+    {
+      "url": "http://localhost:8000/",
+      "description": "Local server"
+    },
+    {
+      "url": "https://localhost:8000/",
+      "description": "HTTPS Local server"
+    }
   ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
-  "securityDefinitions": {
-    "bearerAuth": {
-      "type": "apiKey",
-      "name": "Authorization",
-      "in": "header",
-      "description": "Enter your bearer token in the format **Bearer &lt;token&gt;**"
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Enter your bearer token in the format **Bearer <token>**"
+      }
+    },
+    "schemas": {
+      "SignUpRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User's email address",
+            "example": "example.user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "description": "User's password",
+            "example": "strongpassword123"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "User's full name",
+            "example": "John Doe"
+          },
+          "phone_number": {
+            "type": "string",
+            "description": "User's phone number",
+            "example": "081234567890"
+          },
+          "nick_name": {
+            "type": "string",
+            "description": "User's nickname",
+            "example": "JONE"
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "male",
+              "female",
+              "other"
+            ],
+            "description": "User's gender",
+            "example": "male"
+          },
+          "villageId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the user's village",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "preferred_service": {
+            "type": "string",
+            "description": "User's preferred service",
+            "example": "translator"
+          },
+          "profile_photo": {
+            "type": "string",
+            "format": "binary",
+            "description": "Profile photo (optional)."
+          }
+        },
+        "required": [
+          "email",
+          "password",
+          "full_name",
+          "phone_number",
+          "nick_name",
+          "gender",
+          "villageId",
+          "preferred_service"
+        ]
+      },
+      "SignInRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "example.user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "example": "examplePassword123"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "UpdatePasswordRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "azzamsykir@gmail.com"
+          },
+          "old_password": {
+            "type": "string",
+            "format": "password",
+            "example": "strongpassword123"
+          },
+          "new_password": {
+            "type": "string",
+            "format": "password",
+            "example": "strongpassword123"
+          }
+        },
+        "required": [
+          "email",
+          "old_password",
+          "new_password"
+        ]
+      },
+      "SignUpSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "SignUp succeeded."
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "user": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "updated_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "created_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              },
+              "profile": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "user_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "full_name": {
+                    "type": "string"
+                  },
+                  "phone_number": {
+                    "type": "string"
+                  },
+                  "nick_name": {
+                    "type": "string"
+                  },
+                  "gender": {
+                    "type": "string"
+                  },
+                  "domicile": {
+                    "type": "string"
+                  },
+                  "preferred_service": {
+                    "type": "string"
+                  },
+                  "picture_url": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "updated_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "created_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              }
+            }
+          },
+          "status_code": {
+            "type": "integer",
+            "example": 201
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Bad request."
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "errors": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "field": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "nullable": true
+          },
+          "status_code": {
+            "type": "integer",
+            "example": 400
+          }
+        }
+      },
+      "SignInSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "SignIn succeeded"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "type": "string"
+              },
+              "refresh_token": {
+                "type": "string"
+              },
+              "token_type": {
+                "type": "string"
+              },
+              "expires_in": {
+                "type": "integer"
+              }
+            }
+          },
+          "status_code": {
+            "type": "integer",
+            "example": 200
+          }
+        }
+      },
+      "SignOutSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "SignOut successful. Token invalidated and refresh token removed"
+          },
+          "data": {
+            "type": "null"
+          },
+          "status_code": {
+            "type": "integer",
+            "example": 200
+          }
+        }
+      },
+      "GenerateAccessTokenSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Access token generated successfully"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "type": "string"
+              },
+              "token_type": {
+                "type": "string"
+              },
+              "expires_in": {
+                "type": "integer"
+              }
+            }
+          },
+          "status_code": {
+            "type": "integer",
+            "example": 200
+          }
+        }
+      },
+      "GenerateRefreshTokenSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Token refreshed successfully"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "type": "string"
+              },
+              "refresh_token": {
+                "type": "string"
+              },
+              "token_type": {
+                "type": "string"
+              },
+              "expires_in": {
+                "type": "integer"
+              }
+            }
+          },
+          "status_code": {
+            "type": "integer",
+            "example": 200
+          }
+        }
+      },
+      "UpdatePasswordSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Password updated successfully"
+          },
+          "data": {
+            "type": "null"
+          },
+          "status_code": {
+            "type": "integer",
+            "example": 200
+          }
+        }
+      },
+      "DomicileSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Successfully retrieved full domicile address"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "province": {
+                "type": "string"
+              },
+              "regency": {
+                "type": "string"
+              },
+              "district": {
+                "type": "string"
+              },
+              "village": {
+                "type": "string"
+              },
+              "full_address": {
+                "type": "string"
+              }
+            }
+          },
+          "status_code": {
+            "type": "integer",
+            "example": 200
+          }
+        }
+      },
+      "VillageListResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Successfully retrieved list of villages"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "district_id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "status_code": {
+            "type": "integer",
+            "example": 200
+          }
+        }
+      },
+      "DistrictListResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Successfully retrieved list of districts"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "regency_id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "status_code": {
+            "type": "integer",
+            "example": 200
+          }
+        }
+      },
+      "RegencyListResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Successfully retrieved list of regencies"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "province_id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "status_code": {
+            "type": "integer",
+            "example": 200
+          }
+        }
+      },
+      "ProvinceListResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Successfully retrieved list of provinces"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "status_code": {
+            "type": "integer",
+            "example": 200
+          }
+        }
+      },
+      "OrderCreationRequest": {
+        "type": "object",
+        "properties": {
+          "client_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the client placing the order",
+            "example": "39632c89-5bf6-4f19-908b-f43cdd61fdba"
+          },
+          "freelancer_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the freelancer for the order",
+            "example": "f963b760-d38d-47f6-b1db-6811118f83ef"
+          },
+          "work_location": {
+            "type": "string",
+            "description": "Full address of the work location",
+            "example": "PONDOK JAGUNG TIMUR, SERPONG UTARA, KOTA TANGERANG SELATAN, BANTEN"
+          },
+          "work_start_time": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Start time of the work",
+            "example": "2025-05-06T05:00:00Z"
+          },
+          "work_end_time": {
+            "type": "string",
+            "format": "date-time",
+            "description": "End time of the work",
+            "example": "2025-05-06T20:00:00Z"
+          },
+          "estimated_travel_time": {
+            "type": "integer",
+            "description": "Estimated travel time in hours",
+            "example": 2
+          },
+          "hourly_rate": {
+            "type": "number",
+            "format": "float",
+            "description": "Hourly rate of the freelancer",
+            "example": 50000.00
+          },
+          "total_cost": {
+            "type": "number",
+            "format": "float",
+            "description": "Total cost of the order",
+            "example": 751666.67
+          }
+        },
+        "required": [
+          "client_id",
+          "freelancer_id",
+          "work_location",
+          "work_start_time",
+          "work_end_time",
+          "estimated_travel_time",
+          "hourly_rate",
+          "total_cost"
+        ]
+      },
+      "OrderCreationSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Order created successfully"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "client_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "freelancer_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "work_location": {
+                "type": "string"
+              },
+              "work_start_time": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "work_end_time": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "estimated_travel_time": {
+                "type": "string"
+              },
+              "hourly_rate": {
+                "type": "string"
+              },
+              "total_cost": {
+                "type": "string"
+              },
+              "updated_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "freelancer": {
+                "type": "object",
+                "nullable": true
+              },
+              "client": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "auth_method": {
+                    "type": "string"
+                  },
+                  "email_verified": {
+                    "type": "integer"
+                  },
+                  "email_verified_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "created_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "updated_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              }
+            }
+          },
+          "status_code": {
+            "type": "integer",
+            "example": 201
+          }
+        }
+      },
+      "CreateReviewRequest": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the order being reviewed",
+            "example": "791e9bc6-8d90-4b72-afc5-e9875af19998"
+          },
+          "rating_star": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "description": "Star rating for the review (1-5)",
+            "example": 5
+          },
+          "rating_text": {
+            "type": "string",
+            "description": "Text content of the review",
+            "example": "ok bagus"
+          },
+          "review_file": {
+            "type": "string",
+            "format": "binary",
+            "description": "Optional file attached to the review (e.g., an image)"
+          }
+        },
+        "required": [
+          "order_id",
+          "rating_star",
+          "rating_text"
+        ]
+      },
+      "CreateReviewSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Review has been successfully created."
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "order_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "rating_star": {
+                "type": "integer"
+              },
+              "rating_text": {
+                "type": "string"
+              },
+              "review_file_url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "updated_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "status_code": {
+            "type": "integer",
+            "example": 201
+          }
+        }
+      },
+      "GetReviewsByClientSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Reviews retrieved successfully."
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "order_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "rating_star": {
+                  "type": "integer"
+                },
+                "rating_text": {
+                  "type": "string"
+                },
+                "review_file_url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          },
+          "status_code": {
+            "type": "integer",
+            "example": 200
+          }
+        }
+      }
     }
   },
   "security": [
@@ -69,136 +845,44 @@
         "summary": "Registers a new user.",
         "operationId": "registerUser",
         "description": "Registers a new user. Email will not be delivered yet as the service is using sandbox SMTP.\nSee email example: \"emailExampleLink\"",
-        "consumes": [
-          "multipart/form-data"
-        ],
-        "parameters": [
-          {
-            "in": "formData",
-            "name": "email",
-            "type": "string",
-            "required": true,
-            "description": "Example: example.user@example.com"
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/SignUpRequest"
+              }
+            }
           },
-          {
-            "in": "formData",
-            "name": "password",
-            "type": "string",
-            "required": true,
-            "description": "Example: strongpassword123"
-          },
-          {
-            "in": "formData",
-            "name": "full_name",
-            "type": "string",
-            "required": true,
-            "description": "Example: John Doe"
-          },
-          {
-            "in": "formData",
-            "name": "phone_number",
-            "type": "string",
-            "required": true,
-            "description": "Example: 081234567890"
-          },
-          {
-            "in": "formData",
-            "name": "nick_name",
-            "type": "string",
-            "required": true,
-            "description": "Example: JONE"
-          },
-          {
-            "in": "formData",
-            "name": "gender",
-            "type": "string",
-            "required": true,
-            "description": "Example: male"
-          },
-          {
-            "in": "formData",
-            "name": "villageId",
-            "type": "string",
-            "required": true,
-            "description": "Example: 123e4567-e89b-12d3-a456-426614174000"
-          },
-          {
-            "in": "formData",
-            "name": "preferred_service",
-            "type": "string",
-            "required": true,
-            "description": "Example: translator"
-          },
-          {
-            "in": "formData",
-            "name": "profile_photo",
-            "type": "file",
-            "required": false,
-            "description": "Profile photo (optional)."
-          }
-        ],
+          "required": true
+        },
         "responses": {
           "201": {
             "description": "User registered successfully",
-            "examples": {
+            "content": {
               "application/json": {
-                "message": "SignUp succeeded.",
-                "data": {
-                  "user": {
-                    "id": "2fe48058-2cd3-4fe4-96d1-b2032379e003",
-                    "email": "azzamsykir@gmail.com",
-                    "updated_at": "2025-07-14T08:13:26.000000Z",
-                    "created_at": "2025-07-14T08:13:26.000000Z"
-                  },
-                  "profile": {
-                    "id": "2f7cc725-d42a-4266-9c03-2f6795b45a8c",
-                    "user_id": "2fe48058-2cd3-4fe4-96d1-b2032379e003",
-                    "full_name": "johdoe",
-                    "phone_number": "081281466127",
-                    "nick_name": "joni",
-                    "gender": "male",
-                    "domicile": "PONDOK JAGUNG TIMUR, SERPONG UTARA, KOTA TANGERANG SELATAN, BANTEN",
-                    "preferred_service": "translator",
-                    "picture_url": "http://172.18.0.1:8000/storage",
-                    "updated_at": "2025-07-14T08:13:26.000000Z",
-                    "created_at": "2025-07-14T08:13:26.000000Z"
-                  }
-                },
-                "status_code": 201
+                "schema": {
+                  "$ref": "#/components/schemas/SignUpSuccessResponse"
+                }
               }
             }
           },
           "400": {
             "description": "Invalid request",
-            "examples": {
+            "content": {
               "application/json": {
-                "message": "Bad request.",
-                "data": {
-                  "errors": [
-                    {
-                      "field": "Error",
-                      "message": "Some error appears."
-                    }
-                  ]
-                },
-                "status_code": 400
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
               }
             }
           },
           "422": {
             "description": "Validation error",
-            "examples": {
+            "content": {
               "application/json": {
-                "message": "Request validation failed.",
-                "data": {
-                  "errors": [
-                    {
-                      "field": "email",
-                      "message": "The email has already been taken."
-                    }
-                  ]
-                },
-                "status_code": 422
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
               }
             }
           }
@@ -213,53 +897,34 @@
         "summary": "User Authentication",
         "operationId": "SignInUser",
         "description": "Authenticates the user and returns an access token (5-minute expiry) along with a refresh token that has a longer expiration period.",
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "type": "string",
-                  "example": "example.user@example.com"
-                },
-                "password": {
-                  "type": "string",
-                  "example": "examplePassword123"
-                }
-              },
-              "required": [
-                "email",
-                "password"
-              ]
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignInRequest"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "SignIn successful",
-            "examples": {
+            "content": {
               "application/json": {
-                "message": "SignIn succeeded",
-                "data": {
-                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
-                  "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
-                  "token_type": "bearer",
-                  "expires_in": 600
-                },
-                "status_code": 200
+                "schema": {
+                  "$ref": "#/components/schemas/SignInSuccessResponse"
+                }
               }
             }
           },
           "400": {
             "description": "Bad request",
-            "examples": {
+            "content": {
               "application/json": {
-                "message": "Invalid credentials provided.",
-                "data": null,
-                "status_code": 400
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
               }
             }
           }
@@ -277,31 +942,28 @@
         "responses": {
           "200": {
             "description": "Signout successful",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "SignOut successful. Token invalidated and refresh token removed"
-                },
-                "data": {
-                  "type": "null",
-                  "example": null
-                },
-                "status_code": {
-                  "type": "integer",
-                  "example": 200
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignOutSuccessResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid request"
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         },
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
           }
         ]
       }
@@ -317,44 +979,28 @@
         "responses": {
           "200": {
             "description": "Access token generated successfully",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Access token generated successfully"
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "access_token": {
-                      "type": "string",
-                      "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
-                    },
-                    "token_type": {
-                      "type": "string",
-                      "example": "bearer"
-                    },
-                    "expires_in": {
-                      "type": "integer",
-                      "example": 300
-                    }
-                  }
-                },
-                "status_code": {
-                  "type": "integer",
-                  "example": 200
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateAccessTokenSuccessResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid request"
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         },
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
           }
         ]
       }
@@ -365,57 +1011,43 @@
           "Authentication"
         ],
         "summary": "Generate Refresh Token",
-        "operationId": "ListSessions",
+        "operationId": "GenerateRefreshToken",
         "description": "This endpoint generates a new Access Token and Refresh Token for the user. It is typically consumed automatically or on a scheduled basis to ensure the user remains signed in to the application. The Refresh Token is used only to generate a new Access Token and to access this endpoint, and cannot be used to access other protected endpoints. It is designed to have a longer expiry than the Access Token.",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "Token refreshed successfully",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Token refreshed successfully"
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "access_token": {
-                      "type": "string",
-                      "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
-                    },
-                    "refresh_token": {
-                      "type": "string",
-                      "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
-                    },
-                    "token_type": {
-                      "type": "string",
-                      "example": "bearer"
-                    },
-                    "expires_in": {
-                      "type": "integer",
-                      "example": 300
-                    }
-                  }
-                },
-                "status_code": {
-                  "type": "integer",
-                  "example": 200
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateRefreshTokenSuccessResponse"
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized - Token is missing or invalid"
+            "description": "Unauthorized - Token is missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Invalid request"
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         },
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
           }
         ]
       }
@@ -428,67 +1060,52 @@
         "summary": "Update Password",
         "operationId": "UpdatePassword",
         "description": "This endpoint updates the user's password stored in the database. It uses a basic password matching mechanism for authentication — the user must provide their current password to confirm identity before updating to a new one.",
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "description": "User credentials for updating password",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "type": "string",
-                  "example": "azzamsykir@gmail.com"
-                },
-                "old_password": {
-                  "type": "string",
-                  "example": "strongpassword123"
-                },
-                "new_password": {
-                  "type": "string",
-                  "example": "strongpassword123"
-                }
-              },
-              "required": [
-                "email",
-                "old_password",
-                "new_password"
-              ]
+        "requestBody": {
+          "description": "User credentials for updating password",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePasswordRequest"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Password updated successfully",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Password updated successfully"
-                },
-                "data": {
-                  "type": "null",
-                  "example": null
-                },
-                "status_code": {
-                  "type": "integer",
-                  "example": 200
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdatePasswordSuccessResponse"
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized - Token is missing or invalid"
+            "description": "Unauthorized - Token is missing or invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Invalid request"
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         },
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
           }
         ]
       }
@@ -501,57 +1118,26 @@
         "summary": "Get full domicile string by village ID",
         "operationId": "getDomicileByVillageId",
         "description": "Returns a full string of domicile (village, district, regency, province) based on the provided village ID.",
-        "produces": [
-          "application/json"
-        ],
         "parameters": [
           {
             "name": "villageId",
             "in": "path",
             "required": true,
-            "type": "string",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
             "description": "Village ID",
-            "x-example": "3674070004"
+            "example": "3674070004"
           }
         ],
         "responses": {
           "200": {
             "description": "Successfully retrieved full domicile address",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Successfully retrieved full domicile address"
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "province": {
-                      "type": "string",
-                      "example": "BANTEN"
-                    },
-                    "regency": {
-                      "type": "string",
-                      "example": "KOTA TANGERANG SELATAN"
-                    },
-                    "district": {
-                      "type": "string",
-                      "example": "SERPONG UTARA"
-                    },
-                    "village": {
-                      "type": "string",
-                      "example": "PONDOK JAGUNG TIMUR"
-                    },
-                    "full_address": {
-                      "type": "string",
-                      "example": "PONDOK JAGUNG TIMUR, SERPONG UTARA, KOTA TANGERANG SELATAN, BANTEN"
-                    }
-                  }
-                },
-                "status_code": {
-                  "type": "integer",
-                  "example": 200
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DomicileSuccessResponse"
                 }
               }
             }
@@ -567,52 +1153,25 @@
         "summary": "Get list of villages by district ID",
         "operationId": "getVillagesByDistrictId",
         "description": "Returns a list of villages within the specified district.",
-        "produces": [
-          "application/json"
-        ],
         "parameters": [
           {
             "name": "districtId",
             "in": "path",
             "required": true,
-            "type": "string",
+            "schema": {
+              "type": "string"
+            },
             "description": "District ID",
-            "x-example": "3674070"
+            "example": "3674070"
           }
         ],
         "responses": {
           "200": {
             "description": "Successfully retrieved list of villages",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Successfully retrieved list of villages"
-                },
-                "data": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "integer",
-                        "example": 3674070004
-                      },
-                      "district_id": {
-                        "type": "string",
-                        "example": "3674070"
-                      },
-                      "name": {
-                        "type": "string",
-                        "example": "PONDOK JAGUNG TIMUR"
-                      }
-                    }
-                  }
-                },
-                "status_code": {
-                  "type": "integer",
-                  "example": 200
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VillageListResponse"
                 }
               }
             }
@@ -628,52 +1187,25 @@
         "summary": "Get list of districts by regency ID",
         "operationId": "getDistrictsByRegencyId",
         "description": "Returns a list of districts within the specified regency.",
-        "produces": [
-          "application/json"
-        ],
         "parameters": [
           {
             "name": "regencyId",
             "in": "path",
             "required": true,
-            "type": "string",
+            "schema": {
+              "type": "string"
+            },
             "description": "Regency ID",
-            "x-example": "3674"
+            "example": "3674"
           }
         ],
         "responses": {
           "200": {
             "description": "Successfully retrieved list of districts",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Successfully retrieved list of districts"
-                },
-                "data": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "integer",
-                        "example": 3674070
-                      },
-                      "regency_id": {
-                        "type": "string",
-                        "example": "3674"
-                      },
-                      "name": {
-                        "type": "string",
-                        "example": "SERPONG UTARA"
-                      }
-                    }
-                  }
-                },
-                "status_code": {
-                  "type": "integer",
-                  "example": 200
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DistrictListResponse"
                 }
               }
             }
@@ -689,52 +1221,25 @@
         "summary": "Get list of regencies by province ID",
         "operationId": "getRegenciesByProvinceId",
         "description": "Returns a list of regencies within the specified province.",
-        "produces": [
-          "application/json"
-        ],
         "parameters": [
           {
             "name": "provinceId",
             "in": "path",
             "required": true,
-            "type": "string",
+            "schema": {
+              "type": "string"
+            },
             "description": "Province ID",
-            "x-example": "36"
+            "example": "36"
           }
         ],
         "responses": {
           "200": {
             "description": "Successfully retrieved list of regencies",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Successfully retrieved list of regencies"
-                },
-                "data": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "integer",
-                        "example": 3674
-                      },
-                      "province_id": {
-                        "type": "string",
-                        "example": "36"
-                      },
-                      "name": {
-                        "type": "string",
-                        "example": "KOTA TANGERANG SELATAN"
-                      }
-                    }
-                  }
-                },
-                "status_code": {
-                  "type": "integer",
-                  "example": 200
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegencyListResponse"
                 }
               }
             }
@@ -750,39 +1255,13 @@
         "summary": "Get all provinces",
         "operationId": "getAllProvinces",
         "description": "Returns a list of all provinces in the system.",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [],
         "responses": {
           "200": {
             "description": "Successfully retrieved list of provinces",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Successfully retrieved list of provinces"
-                },
-                "data": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "integer",
-                        "example": 36
-                      },
-                      "name": {
-                        "type": "string",
-                        "example": "BANTEN"
-                      }
-                    }
-                  }
-                },
-                "status_code": {
-                  "type": "integer",
-                  "example": 200
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProvinceListResponse"
                 }
               }
             }
@@ -798,54 +1277,33 @@
         "summary": "Create a new order",
         "operationId": "CreateOrder",
         "description": "create an order for a freelancer. Also triggers a RabbitMQ message to sync data between client and freelancer databases",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderCreationRequest"
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": "Order successfully created",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Order created successfully"
-                },
-                "data": {
-                  "type": "object",
-                  "example": {
-                    "id": "581a568b-48bb-4951-8d92-ee51ff10c0f2",
-                    "client_id": "39632c89-5bf6-4f19-908b-f43cdd61fdba",
-                    "freelancer_id": "f963b760-d38d-47f6-b1db-6811118f83ef",
-                    "work_location": "PONDOK JAGUNG TIMUR, SERPONG UTARA, KOTA TANGERANG SELATAN, BANTEN",
-                    "work_start_time": "2025-05-06T05:00:00.000000Z",
-                    "work_end_time": "2025-05-06T20:00:00.000000Z",
-                    "estimated_travel_time": "2",
-                    "hourly_rate": "50000.00",
-                    "total_cost": "751666.67",
-                    "updated_at": "2025-06-16T09:46:22.000000Z",
-                    "created_at": "2025-06-16T09:46:22.000000Z",
-                    "freelancer": null,
-                    "client": {
-                      "id": "39632c89-5bf6-4f19-908b-f43cdd61fdba",
-                      "email": "azzamsykir@gmail.com",
-                      "auth_method": "manual",
-                      "email_verified": 1,
-                      "email_verified_at": "2025-06-16 09:43:52",
-                      "created_at": "2025-06-16T09:43:28.000000Z",
-                      "updated_at": "2025-06-16T09:43:52.000000Z"
-                    }
-                  }
-                },
-                "status_code": {
-                  "type": "integer",
-                  "example": 201
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderCreationSuccessResponse"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/api/orders/reviews": {
@@ -856,66 +1314,33 @@
         "summary": "Create a new review",
         "operationId": "CreateReview",
         "description": "Submits a review for an order by a client.",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReviewRequest"
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": "Review successfully created",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Review has been successfully created."
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid",
-                      "example": "6d86a00e-e0b0-4f14-b3ce-da64f7de3baf"
-                    },
-                    "order_id": {
-                      "type": "string",
-                      "format": "uuid",
-                      "example": "791e9bc6-8d90-4b72-afc5-e9875af19998"
-                    },
-                    "rating_star": {
-                      "type": "string",
-                      "example": "5"
-                    },
-                    "rating_text": {
-                      "type": "string",
-                      "example": "ok bagus"
-                    },
-                    "review_file_url": {
-                      "type": "string",
-                      "format": "uri",
-                      "example": "http://localhost:8000/storage/review_file/n4IG8VoaD2Tcxlxe1c5coOMNjMQvg4rI0zty4NJP.jpg"
-                    },
-                    "updated_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-07-16T07:38:10.000000Z"
-                    },
-                    "created_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-07-16T07:38:10.000000Z"
-                    }
-                  }
-                },
-                "status_code": {
-                  "type": "integer",
-                  "example": 201
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateReviewSuccessResponse"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/api/orders/reviews/client": {
@@ -926,565 +1351,23 @@
         "summary": "Get reviews by client ID",
         "operationId": "GetReviewByClientId",
         "description": "Returns a list of reviews created by the client.",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [],
         "responses": {
           "200": {
             "description": "Reviews retrieved successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Reviews retrieved successfully."
-                },
-                "data": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "example": "6d86a00e-e0b0-4f14-b3ce-da64f7de3baf"
-                      },
-                      "order_id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "example": "791e9bc6-8d90-4b72-afc5-e9875af19998"
-                      },
-                      "rating_star": {
-                        "type": "integer",
-                        "example": 5
-                      },
-                      "rating_text": {
-                        "type": "string",
-                        "example": "ok bagus"
-                      },
-                      "review_file_url": {
-                        "type": "string",
-                        "format": "uri",
-                        "example": "http://localhost:8000/storage/review_file/n4IG8VoaD2Tcxlxe1c5coOMNjMQvg4rI0zty4NJP.jpg"
-                      },
-                      "created_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2025-07-16T07:38:10.000000Z"
-                      },
-                      "updated_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2025-07-16T07:38:10.000000Z"
-                      }
-                    }
-                  }
-                },
-                "status_code": {
-                  "type": "integer",
-                  "example": 200
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetReviewsByClientSuccessResponse"
                 }
               }
             }
           }
-        }
-      }
-    },
-    "/api/orders/complaints": {
-      "post": {
-        "tags": [
-          "Orders"
-        ],
-        "summary": "Create a new complaint",
-        "operationId": "CreateComplaint",
-        "description": "Submits a complaint related to an order.",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [],
-        "responses": {
-          "201": {
-            "description": "Create Complaint Success.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Create Complaint Success."
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid",
-                      "example": "1c16078e-dd74-4518-8b28-6a674966a865"
-                    },
-                    "order_id": {
-                      "type": "string",
-                      "format": "uuid",
-                      "example": "791e9bc6-8d90-4b72-afc5-e9875af19998"
-                    },
-                    "complaint_type": {
-                      "type": "string",
-                      "example": "pekerjaan_tidak_selesai"
-                    },
-                    "description": {
-                      "type": "string",
-                      "example": "pekerjaan nggak selesai,freelancer kabur"
-                    },
-                    "evidence_url": {
-                      "type": "string",
-                      "format": "uri",
-                      "example": "http://localhost:8000/storage/complaint_evidence/1c16078e-dd74-4518-8b28-6a674966a865_evidence.jpg"
-                    },
-                    "contact_info": {
-                      "type": [
-                        "string",
-                        "null"
-                      ],
-                      "example": null
-                    },
-                    "updated_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-07-16T07:43:29.000000Z"
-                    },
-                    "created_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-07-16T07:43:29.000000Z"
-                    }
-                  }
-                },
-                "status_code": {
-                  "type": "integer",
-                  "example": 201
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/orders/complaints/client": {
-      "get": {
-        "tags": [
-          "Orders"
-        ],
-        "summary": "Get complaints by client ID",
-        "operationId": "GetComplaintByClientId",
-        "description": "Returns a list of complaints created by the client.",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Complaints retrieved successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Complaints retrieved successfully."
-                },
-                "data": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "example": "1c16078e-dd74-4518-8b28-6a674966a865"
-                      },
-                      "order_id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "example": "791e9bc6-8d90-4b72-afc5-e9875af19998"
-                      },
-                      "complaint_type": {
-                        "type": "string",
-                        "example": "pekerjaan_tidak_selesai"
-                      },
-                      "description": {
-                        "type": "string",
-                        "example": "pekerjaan nggak selesai,freelancer kabur"
-                      },
-                      "evidence_url": {
-                        "type": "string",
-                        "format": "uri",
-                        "example": "http://localhost:8000/storage/complaint_evidence/1c16078e-dd74-4518-8b28-6a674966a865_evidence.jpg"
-                      },
-                      "event_time": {
-                        "type": [
-                          "string",
-                          "null"
-                        ],
-                        "format": "date-time",
-                        "example": null
-                      },
-                      "contact_info": {
-                        "type": [
-                          "string",
-                          "null"
-                        ],
-                        "example": null
-                      },
-                      "created_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2025-07-16T07:43:29.000000Z"
-                      },
-                      "updated_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2025-07-16T07:43:29.000000Z"
-                      }
-                    }
-                  }
-                },
-                "status_code": {
-                  "type": "integer",
-                  "example": 200
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/orders/negotiations": {
-      "post": {
-        "tags": [
-          "Orders"
-        ],
-        "summary": "Create a new negotiation",
-        "operationId": "CreateNegotiation",
-        "description": "Initiates a negotiation related to an order.",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [],
-        "responses": {
-          "201": {
-            "description": "Negotiation created successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Negotiation created successfully."
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "order_id": {
-                      "type": "string",
-                      "format": "uuid",
-                      "example": "791e9bc6-8d90-4b72-afc5-e9875af19998"
-                    },
-                    "work_start_time": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-05-06T09:00:00.000000Z"
-                    },
-                    "work_end_time": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-05-06T17:00:00.000000Z"
-                    },
-                    "working_hours_duration": {
-                      "type": "string",
-                      "example": "8.00"
-                    },
-                    "hourly_rate": {
-                      "type": "string",
-                      "example": "150000.00"
-                    },
-                    "note": {
-                      "type": "string",
-                      "example": "Butuh tambahan waktu untuk revisi desain"
-                    },
-                    "id": {
-                      "type": "string",
-                      "format": "uuid",
-                      "example": "c4a85167-661a-4823-95ea-669cbac1d1db"
-                    },
-                    "total_cost": {
-                      "type": "string",
-                      "example": "1200000.00"
-                    },
-                    "updated_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-07-16T07:55:57.000000Z"
-                    },
-                    "created_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-07-16T07:55:57.000000Z"
-                    }
-                  }
-                },
-                "status_code": {
-                  "type": "integer",
-                  "example": 201
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/orders/negotiations/client": {
-      "get": {
-        "tags": [
-          "Orders"
-        ],
-        "summary": "Get negotiations by client ID",
-        "operationId": "GetNegotiationByClientId",
-        "description": "Returns a list of negotiations created by the client.",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Negotiation data retrieved successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Negotiation data retrieved successfully."
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid",
-                      "example": "c4a85167-661a-4823-95ea-669cbac1d1db"
-                    },
-                    "order_id": {
-                      "type": "string",
-                      "format": "uuid",
-                      "example": "791e9bc6-8d90-4b72-afc5-e9875af19998"
-                    },
-                    "work_start_time": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-05-06T09:00:00.000000Z"
-                    },
-                    "work_end_time": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-05-06T17:00:00.000000Z"
-                    },
-                    "working_hours_duration": {
-                      "type": "string",
-                      "example": "8.00"
-                    },
-                    "hourly_rate": {
-                      "type": "string",
-                      "example": "150000.00"
-                    },
-                    "total_cost": {
-                      "type": "string",
-                      "example": "1200000.00"
-                    },
-                    "note": {
-                      "type": "string",
-                      "example": "Butuh tambahan waktu untuk revisi desain"
-                    },
-                    "created_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-07-16T07:55:57.000000Z"
-                    },
-                    "updated_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-07-16T07:55:57.000000Z"
-                    }
-                  }
-                },
-                "status_code": {
-                  "type": "integer",
-                  "example": 200
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/chats": {
-      "post": {
-        "tags": [
-          "Chats"
-        ],
-        "summary": "Create a new Chat",
-        "operationId": "CreateChat",
-        "description": "This endpoint stores chat messages in the database, broadcasts them via WebSocket, and triggers a RabbitMQ queue to synchronize data between client and freelancer.",
-        "produces": [
-          "application/json"
-        ],
-        "consumes": [
-          "application/json"
-        ],
+        },
         "security": [
           {
             "bearerAuth": []
           }
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "chat": {
-                  "type": "string",
-                  "example": "test"
-                },
-                "freelancer_id": {
-                  "type": "string",
-                  "format": "uuid",
-                  "example": "f963b760-d38d-47f6-b1db-6811118f83ef"
-                }
-              },
-              "required": [
-                "chat",
-                "freelancer_id"
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Chat sent successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Chat sent successfully."
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "room": {
-                      "type": "string",
-                      "example": "test-room-1"
-                    },
-                    "user_id": {
-                      "type": "string",
-                      "format": "uuid",
-                      "example": "2fe48058-2cd3-4fe4-96d1-b2032379e003"
-                    },
-                    "chat": {
-                      "type": "string",
-                      "example": "test"
-                    }
-                  }
-                },
-                "status_code": {
-                  "type": "integer",
-                  "example": 200
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/chats/{freelancerId}": {
-      "get": {
-        "tags": [
-          "Orders"
-        ],
-        "summary": "Get negotiations by client ID",
-        "operationId": "GetNegotiationByClientId",
-        "description": "Returns a list of negotiations created by the client.",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Negotiation data retrieved successfully.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Negotiation data retrieved successfully."
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid",
-                      "example": "c4a85167-661a-4823-95ea-669cbac1d1db"
-                    },
-                    "order_id": {
-                      "type": "string",
-                      "format": "uuid",
-                      "example": "791e9bc6-8d90-4b72-afc5-e9875af19998"
-                    },
-                    "work_start_time": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-05-06T09:00:00.000000Z"
-                    },
-                    "work_end_time": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-05-06T17:00:00.000000Z"
-                    },
-                    "working_hours_duration": {
-                      "type": "string",
-                      "example": "8.00"
-                    },
-                    "hourly_rate": {
-                      "type": "string",
-                      "example": "150000.00"
-                    },
-                    "total_cost": {
-                      "type": "string",
-                      "example": "1200000.00"
-                    },
-                    "note": {
-                      "type": "string",
-                      "example": "Butuh tambahan waktu untuk revisi desain"
-                    },
-                    "created_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-07-16T07:55:57.000000Z"
-                    },
-                    "updated_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2025-07-16T07:55:57.000000Z"
-                    }
-                  }
-                },
-                "status_code": {
-                  "type": "integer",
-                  "example": 200
-                }
-              }
-            }
-          }
-        }
+        ]
       }
     }
   }
