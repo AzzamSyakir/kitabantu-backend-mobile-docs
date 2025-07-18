@@ -235,7 +235,10 @@
             "example": "Bad request."
           },
           "data": {
-            "type": "object",
+            "type": [
+              "object",
+              "null"
+            ],
             "properties": {
               "errors": {
                 "type": "array",
@@ -251,8 +254,7 @@
                   }
                 }
               }
-            },
-            "nullable": true
+            }
           },
           "status_code": {
             "type": "integer",
@@ -298,7 +300,9 @@
             "example": "SignOut successful. Token invalidated and refresh token removed"
           },
           "data": {
-            "type": "null"
+            "type": [
+              "null"
+            ]
           },
           "status_code": {
             "type": "integer",
@@ -371,7 +375,9 @@
             "example": "Password updated successfully"
           },
           "data": {
-            "type": "null"
+            "type": [
+              "null"
+            ]
           },
           "status_code": {
             "type": "integer",
@@ -641,8 +647,10 @@
                 "format": "date-time"
               },
               "freelancer": {
-                "type": "object",
-                "nullable": true
+                "type": [
+                  "object",
+                  "null"
+                ]
               },
               "client": {
                 "type": "object",
@@ -797,6 +805,113 @@
                 "updated_at": {
                   "type": "string",
                   "format": "date-time"
+                }
+              }
+            }
+          },
+          "status_code": {
+            "type": "integer",
+            "example": 200
+          }
+        }
+      },
+      "CreateChatRequest": {
+        "type": "object",
+        "properties": {
+          "chat": {
+            "type": "string",
+            "example": "test"
+          },
+          "freelancer_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "f963b760-d38d-47f6-b1db-6811118f83ef"
+          }
+        },
+        "required": [
+          "chat",
+          "freelancer_id"
+        ]
+      },
+      "CreateChatSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Chat sent successfully."
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "room": {
+                "type": "string",
+                "example": "test-room-1"
+              },
+              "user_id": {
+                "type": "string",
+                "format": "uuid",
+                "example": "2fe48058-2cd3-4fe4-96d1-b2032379e003"
+              },
+              "chat": {
+                "type": "string",
+                "example": "test"
+              }
+            }
+          },
+          "status_code": {
+            "type": "integer",
+            "example": 200
+          }
+        }
+      },
+      "GetChatHistorySuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Chat retrieved successfully."
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "room_id": {
+                "type": "string",
+                "format": "uuid",
+                "example": "00889a24-fd07-4444-b036-48c89ffb8757"
+              },
+              "chat_history": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "4d56004a-c535-4a2d-9318-406b005c4cbc"
+                    },
+                    "chats": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "example": null
+                    },
+                    "sender_id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "2fe48058-2cd3-4fe4-96d1-b2032379e003"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-07-18T03:50:22.000000Z"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-07-18T03:50:22.000000Z"
+                    }
+                  }
                 }
               }
             }
@@ -1358,6 +1473,83 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/GetReviewsByClientSuccessResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/chats": {
+      "post": {
+        "tags": [
+          "Chats"
+        ],
+        "summary": "Create a new Chat",
+        "operationId": "CreateChat",
+        "description": "This endpoint stores chat messages in the database, broadcasts them via WebSocket, and triggers a RabbitMQ queue to synchronize data between client and freelancer.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateChatRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Chat sent successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateChatSuccessResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/chats/{freelancerId}": {
+      "get": {
+        "tags": [
+          "Chats"
+        ],
+        "summary": "Get Chat History",
+        "operationId": "GetChat",
+        "description": "Returns a list of chat messages between client and freelancer inside a room.",
+        "parameters": [
+          {
+            "name": "freelancerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Freelancer UUID to retrieve chat history with",
+            "example": "f963b760-d38d-47f6-b1db-6811118f83ef"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chat retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetChatHistorySuccessResponse"
                 }
               }
             }
