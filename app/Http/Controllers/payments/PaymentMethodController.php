@@ -30,7 +30,7 @@ class PaymentMethodController
             [$expMonth, $expYear] = explode('/', $cardData['card_exp']);
 
             $queryParams = [
-                'client_key' => env('MIDTRANS_CLIENT_KEY'),
+                'client_key' => config('midtrans.client_key'),
                 'card_number' => $cardData['card_number'],
                 'card_cvv' => $cardData['card_cvv'],
                 'card_exp_month' => $expMonth,
