@@ -2787,6 +2787,377 @@
           }
         ]
       }
+    },
+    "/api/payments/top-up": {
+      "post": {
+        "tags": [
+          "Payments"
+        ],
+        "summary": "Initiate a new Top Up",
+        "operationId": "CreateTopUp",
+        "description": "Initiates a top-up transaction using various supported methods such as card, e-money, bank transfer, and over-the-counter. The request body structure dynamically adjusts based on the selected payment_method. Upon successful top-up, the user's balance will increase by the specified amount.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePaymentRequest"
+              },
+              "examples": {
+                "Card Payment": {
+                  "value": {
+                    "freelancer_id": "f963b760-d38d-47f6-b1db-6811118f83ef",
+                    "amount": 6000000,
+                    "payment_method": "card",
+                    "card": {
+                      "card_number": "4811111111111114",
+                      "card_cvv": "123",
+                      "card_exp": "12/25",
+                      "card_holder_name": "Asa Kusuma",
+                      "card_address": "Jl. Kemerdekaan No. 17",
+                      "save_card": true
+                    }
+                  }
+                },
+                "QRIS Payment": {
+                  "value": {
+                    "freelancer_id": "f963b760-d38d-47f6-b1db-6811118f83ef",
+                    "amount": 500000,
+                    "payment_method": "qris"
+                  }
+                },
+                "GoPay Payment": {
+                  "value": {
+                    "freelancer_id": "f963b760-d38d-47f6-b1db-6811118f83ef",
+                    "amount": 750000,
+                    "payment_method": "gopay"
+                  }
+                },
+                "ShopeePay Payment": {
+                  "value": {
+                    "freelancer_id": "f963b760-d38d-47f6-b1db-6811118f83ef",
+                    "amount": 300000,
+                    "payment_method": "shopeepay"
+                  }
+                },
+                "Bank Transfer BRI": {
+                  "value": {
+                    "freelancer_id": "f963b760-d38d-47f6-b1db-6811118f83ef",
+                    "amount": 1200000,
+                    "payment_method": "bri"
+                  }
+                },
+                "Bank Transfer BCA": {
+                  "value": {
+                    "freelancer_id": "f963b760-d38d-47f6-b1db-6811118f83ef",
+                    "amount": 1500000,
+                    "payment_method": "bca"
+                  }
+                },
+                "Bank Transfer Mandiri": {
+                  "value": {
+                    "freelancer_id": "f963b760-d38d-47f6-b1db-6811118f83ef",
+                    "amount": 1800000,
+                    "payment_method": "mandiri"
+                  }
+                },
+                "Bank Transfer BNI": {
+                  "value": {
+                    "freelancer_id": "f963b760-d38d-47f6-b1db-6811118f83ef",
+                    "amount": 2000000,
+                    "payment_method": "bni"
+                  }
+                },
+                "Alfamart Payment": {
+                  "value": {
+                    "freelancer_id": "f963b760-d38d-47f6-b1db-6811118f83ef",
+                    "amount": 200000,
+                    "payment_method": "alfamart"
+                  }
+                },
+                "Indomaret Payment": {
+                  "value": {
+                    "freelancer_id": "f963b760-d38d-47f6-b1db-6811118f83ef",
+                    "amount": 250000,
+                    "payment_method": "indomaret"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Payment initiated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "success",
+                    "message": "Payment is being processed.",
+                    "data": {
+                      "payment": {
+                        "id": "fb1e0dff-2541-4f84-9b84-3b628f1138f5",
+                        "payment_type": "top_up",
+                        "payment_method": "card",
+                        "amount": 6000000,
+                        "date": "2025-07-18T06:55:32.376679Z",
+                        "status": "pending",
+                        "client_id": "2fe48058-2cd3-4fe4-96d1-b2032379e003",
+                        "freelancer_id": "f963b760-d38d-47f6-b1db-6811118f83ef",
+                        "updated_at": "2025-07-18T06:55:32.000000Z",
+                        "created_at": "2025-07-18T06:55:32.000000Z"
+                      },
+                      "payment_info": {
+                        "redirect_url": "https://api.sandbox.midtrans.com/v2/3ds/redirect/9931b646-7534-414a-8d68-7702a2a58fda"
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "Card Payment Response": {
+                    "value": {
+                      "status": "success",
+                      "message": "Payment is being processed.",
+                      "data": {
+                        "payment": {
+                          "id": "fb1e0dff-2541-4f84-9b84-3b628f1138f5",
+                          "payment_type": "top_up",
+                          "payment_method": "card",
+                          "amount": 6000000,
+                          "date": "2025-07-18T06:55:32.376679Z",
+                          "status": "pending",
+                          "client_id": "2fe48058-2cd3-4fe4-96d1-b2032379e003",
+                          "freelancer_id": "f963b760-d38d-47f6-b1db-6811118f83ef",
+                          "updated_at": "2025-07-18T06:55:32.000000Z",
+                          "created_at": "2025-07-18T06:55:32.000000Z"
+                        },
+                        "payment_info": {
+                          "redirect_url": "https://api.sandbox.midtrans.com/v2/3ds/redirect/9931b646-7534-414a-8d68-7702a2a58fda"
+                        }
+                      }
+                    }
+                  },
+                  "QRIS Payment Response": {
+                    "value": {
+                      "status": "success",
+                      "message": "Payment is being processed.",
+                      "data": {
+                        "payment": {
+                          "id": "c8a44d8b-eb84-40bf-b23f-72370a38e28c",
+                          "payment_type": "top_up",
+                          "payment_method": "qris",
+                          "amount": 6000000,
+                          "date": "2025-07-18T06:56:54.004873Z",
+                          "status": "pending",
+                          "client_id": "2fe48058-2cd3-4fe4-96d1-b2032379e003",
+                          "freelancer_id": "f963b760-d38d-47f6-b1db-6811118f83ef",
+                          "updated_at": "2025-07-18T06:56:54.000000Z",
+                          "created_at": "2025-07-18T06:56:54.000000Z"
+                        },
+                        "payment_info": {
+                          "qr_url": "https://api.sandbox.midtrans.com/v2/qris/eac710b1-4a45-431a-a72e-78209074f4de/qr-code"
+                        }
+                      }
+                    }
+                  },
+                  "GoPay Payment Response": {
+                    "value": {
+                      "status": "success",
+                      "message": "Payment is being processed.",
+                      "data": {
+                        "payment": {
+                          "id": "cd884adb-aae9-469d-b9c3-49d6d3672d67",
+                          "payment_type": "top_up",
+                          "payment_method": "gopay",
+                          "amount": 6000000,
+                          "date": "2025-07-18T06:57:24.084759Z",
+                          "status": "pending",
+                          "client_id": "2fe48058-2cd3-4fe4-96d1-b2032379e003",
+                          "freelancer_id": "f963b760-d38d-47f6-b1db-6811118f83ef",
+                          "updated_at": "2025-07-18T06:57:24.000000Z",
+                          "created_at": "2025-07-18T06:57:24.000000Z"
+                        },
+                        "payment_info": {
+                          "redirect_url": "https://simulator.sandbox.midtrans.com/v2/deeplink/detail?tref=A120250718065724qNah7tIZJjID&callbackUrl=%3Forder_id%3Dcd884adb-aae9-469d-b9c3-49d6d3672d67"
+                        }
+                      }
+                    }
+                  },
+                  "ShopeePay Payment Response": {
+                    "value": {
+                      "status": "success",
+                      "message": "Payment is being processed.",
+                      "data": {
+                        "payment": {
+                          "id": "shopeepay-payment-id",
+                          "payment_type": "top_up",
+                          "payment_method": "shopeepay",
+                          "amount": 300000,
+                          "date": "2025-07-18T07:05:00.000000Z",
+                          "status": "pending",
+                          "client_id": "2fe48058-2cd3-4fe4-96d1-b2032379e003",
+                          "freelancer_id": "f963b760-d38d-47f6-b1db-6811118f83ef",
+                          "updated_at": "2025-07-18T07:05:00.000000Z",
+                          "created_at": "2025-07-18T07:05:00.000000Z"
+                        },
+                        "payment_info": {
+                          "redirect_url": "https://api.sandbox.midtrans.com/v2/shopeepay/redirect/some-token"
+                        }
+                      }
+                    }
+                  },
+                  "Bank Transfer Response (BRI)": {
+                    "value": {
+                      "status": "success",
+                      "message": "Payment is being processed.",
+                      "data": {
+                        "payment": {
+                          "id": "03183e3b-1ec8-4501-b0b8-229ba22b6cc2",
+                          "payment_type": "top_up",
+                          "payment_method": "bri",
+                          "amount": 6000000,
+                          "date": "2025-07-18T06:41:41.083295Z",
+                          "status": "pending",
+                          "client_id": "2fe48058-2cd3-4fe4-96d1-b2032379e003",
+                          "freelancer_id": "f963b760-d38d-47f6-b1db-6811118f83ef",
+                          "updated_at": "2025-07-18T06:41:41.000000Z",
+                          "created_at": "2025-07-18T06:41:41.000000Z"
+                        },
+                        "payment_info": {
+                          "va_number": "278241834256564383"
+                        }
+                      }
+                    }
+                  },
+                  "Bank Transfer Response (BCA)": {
+                    "value": {
+                      "status": "success",
+                      "message": "Payment is being processed.",
+                      "data": {
+                        "payment": {
+                          "id": "03183e3b-1ec8-4501-b0b8-229ba22b6cc2",
+                          "payment_type": "top_up",
+                          "payment_method": "bca",
+                          "amount": 6000000,
+                          "date": "2025-07-18T06:41:41.083295Z",
+                          "status": "pending",
+                          "client_id": "2fe48058-2cd3-4fe4-96d1-b2032379e003",
+                          "freelancer_id": "f963b760-d38d-47f6-b1db-6811118f83ef",
+                          "updated_at": "2025-07-18T06:41:41.000000Z",
+                          "created_at": "2025-07-18T06:41:41.000000Z"
+                        },
+                        "payment_info": {
+                          "va_number": "123456789012345"
+                        }
+                      }
+                    }
+                  },
+                  "Bank Transfer Response (Mandiri)": {
+                    "value": {
+                      "status": "success",
+                      "message": "Payment is being processed.",
+                      "data": {
+                        "payment": {
+                          "id": "03183e3b-1ec8-4501-b0b8-229ba22b6cc2",
+                          "payment_type": "top_up",
+                          "payment_method": "mandiri",
+                          "amount": 1800000,
+                          "date": "2025-07-18T06:41:41.083295Z",
+                          "status": "pending",
+                          "client_id": "2fe48058-2cd3-4fe4-96d1-b2032379e003",
+                          "freelancer_id": "f963b760-d38d-47f6-b1db-6811118f83ef",
+                          "updated_at": "2025-07-18T06:41:41.000000Z",
+                          "created_at": "2025-07-18T06:41:41.000000Z"
+                        },
+                        "payment_info": {
+                          "bill_key": "MANDIRI_BILL_12345",
+                          "biller_code": "70012"
+                        }
+                      }
+                    }
+                  },
+                  "Bank Transfer Response (BNI)": {
+                    "value": {
+                      "status": "success",
+                      "message": "Payment is being processed.",
+                      "data": {
+                        "payment": {
+                          "id": "03183e3b-1ec8-4501-b0b8-229ba22b6cc2",
+                          "payment_type": "top_up",
+                          "payment_method": "bni",
+                          "amount": 2000000,
+                          "date": "2025-07-18T06:41:41.083295Z",
+                          "status": "pending",
+                          "client_id": "2fe48058-2cd3-4fe4-96d1-b2032379e003",
+                          "freelancer_id": "f963b760-d38d-47f6-b1db-6811118f83ef",
+                          "updated_at": "2025-07-18T06:41:41.000000Z",
+                          "created_at": "2025-07-18T06:41:41.000000Z"
+                        },
+                        "payment_info": {
+                          "va_number": "8888123456789012"
+                        }
+                      }
+                    }
+                  },
+                  "Alfamart Payment Response": {
+                    "value": {
+                      "status": "success",
+                      "message": "Payment is being processed.",
+                      "data": {
+                        "payment": {
+                          "id": "some-id",
+                          "payment_type": "top_up",
+                          "payment_method": "alfamart",
+                          "amount": 150000,
+                          "date": "2025-07-18T07:00:00.000000Z",
+                          "status": "pending",
+                          "client_id": "2fe48058-2cd3-4fe4-96d1-b2032379e003",
+                          "freelancer_id": "f963b760-d38d-47f6-b1db-6811118f83ef",
+                          "updated_at": "2025-07-18T07:00:00.000000Z",
+                          "created_at": "2025-07-18T07:00:00.000000Z"
+                        },
+                        "payment_info": {
+                          "bill_key": "VA_ALFAMART_12345",
+                          "payment_code": "0000123456789"
+                        }
+                      }
+                    }
+                  },
+                  "Indomaret Payment Response": {
+                    "value": {
+                      "status": "success",
+                      "message": "Payment is being processed.",
+                      "data": {
+                        "payment": {
+                          "id": "indomaret-payment-id",
+                          "payment_type": "top_up",
+                          "payment_method": "indomaret",
+                          "amount": 250000,
+                          "date": "2025-07-18T07:10:00.000000Z",
+                          "status": "pending",
+                          "client_id": "2fe48058-2cd3-4fe4-96d1-b2032379e003",
+                          "freelancer_id": "f963b760-d38d-47f6-b1db-6811118f83ef",
+                          "updated_at": "2025-07-18T07:10:00.000000Z",
+                          "created_at": "2025-07-18T07:10:00.000000Z"
+                        },
+                        "payment_info": {
+                          "payment_code": "5555123456789"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
     }
   }
 }
