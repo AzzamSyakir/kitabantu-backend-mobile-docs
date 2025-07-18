@@ -26,13 +26,18 @@
     "application/json"
   ],
   "securityDefinitions": {
-    "BearerAuth": {
+    "bearerAuth": {
       "type": "apiKey",
       "name": "Authorization",
       "in": "header",
-      "description": "Enter 'Bearer {token}' to authenticate requests."
+      "description": "Enter your bearer token in the format **Bearer &lt;token&gt;**"
     }
   },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
   "tags": [
     {
       "name": "Authentication",
@@ -47,16 +52,12 @@
       "description": "Endpoints related to order management, including orders, handling reviews, complaints, and negotiations."
     },
     {
-      "name": "Categories",
-      "description": "Endpoints for managing product categories."
+      "name": "Chats",
+      "description": "Endpoints that provide chat functionalities, including sending and retrieving messages. Messages are sent via HTTP but delivered in real-time through WebSocket. Chat history can be fetched using standard GET requests."
     },
     {
-      "name": "Products",
-      "description": "Endpoints for managing products."
-    },
-    {
-      "name": "Orders",
-      "description": "Endpoints for order processing."
+      "name": "Payments",
+      "description": "Endpoints for managing payments. Supports four payment categories: Bank Transfer, E-Wallet, Card (Credit/Debit), and Over the Counter."
     }
   ],
   "paths": {
@@ -1239,6 +1240,171 @@
       }
     },
     "/api/orders/negotiations/client": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Get negotiations by client ID",
+        "operationId": "GetNegotiationByClientId",
+        "description": "Returns a list of negotiations created by the client.",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Negotiation data retrieved successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Negotiation data retrieved successfully."
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "c4a85167-661a-4823-95ea-669cbac1d1db"
+                    },
+                    "order_id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "791e9bc6-8d90-4b72-afc5-e9875af19998"
+                    },
+                    "work_start_time": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-05-06T09:00:00.000000Z"
+                    },
+                    "work_end_time": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-05-06T17:00:00.000000Z"
+                    },
+                    "working_hours_duration": {
+                      "type": "string",
+                      "example": "8.00"
+                    },
+                    "hourly_rate": {
+                      "type": "string",
+                      "example": "150000.00"
+                    },
+                    "total_cost": {
+                      "type": "string",
+                      "example": "1200000.00"
+                    },
+                    "note": {
+                      "type": "string",
+                      "example": "Butuh tambahan waktu untuk revisi desain"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-07-16T07:55:57.000000Z"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-07-16T07:55:57.000000Z"
+                    }
+                  }
+                },
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/chats": {
+      "post": {
+        "tags": [
+          "Chats"
+        ],
+        "summary": "Create a new Chat",
+        "operationId": "CreateChat",
+        "description": "This endpoint stores chat messages in the database, broadcasts them via WebSocket, and triggers a RabbitMQ queue to synchronize data between client and freelancer.",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "chat": {
+                  "type": "string",
+                  "example": "test"
+                },
+                "freelancer_id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "f963b760-d38d-47f6-b1db-6811118f83ef"
+                }
+              },
+              "required": [
+                "chat",
+                "freelancer_id"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chat sent successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Chat sent successfully."
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "room": {
+                      "type": "string",
+                      "example": "test-room-1"
+                    },
+                    "user_id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "2fe48058-2cd3-4fe4-96d1-b2032379e003"
+                    },
+                    "chat": {
+                      "type": "string",
+                      "example": "test"
+                    }
+                  }
+                },
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/chats/{freelancerId}": {
       "get": {
         "tags": [
           "Orders"
