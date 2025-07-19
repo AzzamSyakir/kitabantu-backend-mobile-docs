@@ -81,6 +81,19 @@ services:
             - "${APP_HTTP_PORT}:80"
             - "${APP_SSL_PORT}:443"
 
+    swagger-ui:
+        image: swaggerapi/swagger-ui:latest
+        container_name: swagger-ui
+        restart: unless-stopped
+        ports:
+        - ${SWAGGER_PORT}:8080
+        depends_on:
+        - app
+        volumes:
+        - ../docs/api/swagger.json:/spec/docs/swagger.json
+        environment:
+            SWAGGER_JSON: /spec/docs/swagger.json
+
 volumes:
     app-db:
     rabbitmq-data:
