@@ -75,7 +75,7 @@ class OrderController
             DB::commit();
 
             return ApiResponseHelper::respond(
-                $order->load(['freelancer', 'client']),
+                $order->load(['client']),
                 'Order created successfully',
                 201
             );

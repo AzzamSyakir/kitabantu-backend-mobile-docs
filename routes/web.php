@@ -13,7 +13,7 @@ Route::get('/test-email-view', function () {
     ]);
 });
 
-Route::prefix('auths')->controller(AuthController::class)->group(function () {
+Route::prefix('auth')->controller(AuthController::class)->group(function () {
     Route::get('/google/redirect', 'RedirectGoogle');
     Route::get('/google/callback', 'callBackGoogle');
 });

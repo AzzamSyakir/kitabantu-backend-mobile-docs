@@ -98,7 +98,7 @@ class PaymentController
 
       return response()->json([
         'status' => 'error',
-        'message' => 'Failed to create top up.',
+        'message' => 'Failed to create Payment.',
         'error' => $e->getMessage(),
       ], 500);
     }

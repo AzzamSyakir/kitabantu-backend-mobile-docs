@@ -59,7 +59,6 @@ class ChatController
                 'room' => 'tes-room-1',  //nanti diubah ini testing aja
                 'user_id' => $userId,
                 'chat' => $chat,
-                'file' => $fileUrl,
             ];
             $chatHistory = ChatHistory::create(
                 [
@@ -67,7 +66,6 @@ class ChatController
                     'chat_room_id' => $chatRoom->id,
                     'sender_id' => $userId,
                     'chat' => $chat,
-                    'file' => $fileUrl,
                 ]
             );
 

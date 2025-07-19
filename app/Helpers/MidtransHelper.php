@@ -11,8 +11,8 @@ class MidtransHelper
 
   protected static function init()
   {
-    self::$serverKey = env('MIDTRANS_SERVER_KEY');
-    $isProduction = env('MIDTRANS_IS_PRODUCTION', false);
+    self::$serverKey = config('midtrans.server_key');
+    $isProduction = config('midtrans.is_production');
 
     self::$baseUrl = $isProduction
       ? 'https://api.midtrans.com/v2'
