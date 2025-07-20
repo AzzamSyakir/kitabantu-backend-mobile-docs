@@ -970,6 +970,186 @@
           }
         }
       },
+      "CreateNegotiationRequest": {
+        "type": "object",
+        "required": [
+          "order_id",
+          "work_start_time",
+          "work_end_time",
+          "working_hours_duration",
+          "hourly_rate",
+          "note",
+          "village_id"
+        ],
+        "properties": {
+          "order_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The ID of the order for which the negotiation is being created."
+          },
+          "work_start_time": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The proposed start time for the work.",
+            "example": "2025-05-06 09:00:00"
+          },
+          "work_end_time": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The proposed end time for the work.",
+            "example": "2025-05-06 17:00:00"
+          },
+          "working_hours_duration": {
+            "type": "integer",
+            "description": "The proposed duration of work in hours.",
+            "example": 8
+          },
+          "hourly_rate": {
+            "type": "number",
+            "format": "float",
+            "description": "The proposed hourly rate for the work.",
+            "example": 150000
+          },
+          "note": {
+            "type": "string",
+            "description": "Additional notes or details for the negotiation.",
+            "example": "Butuh tambahan waktu untuk revisi desain"
+          },
+          "village_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The ID of the village relevant to the negotiation."
+          }
+        }
+      },
+      "CreateNegotiationSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Negotiation created successfully."
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "order_id": {
+                "type": "string",
+                "format": "uuid",
+                "example": "791e9bc6-8d90-4b72-afc5-e9875af19998"
+              },
+              "work_start_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-05-06T09:00:00.000000Z"
+              },
+              "work_end_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-05-06T17:00:00.000000Z"
+              },
+              "working_hours_duration": {
+                "type": "string",
+                "example": "8.00"
+              },
+              "hourly_rate": {
+                "type": "string",
+                "example": "150000.00"
+              },
+              "note": {
+                "type": "string",
+                "example": "Butuh tambahan waktu untuk revisi desain"
+              },
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "example": "c4a85167-661a-4823-95ea-669cbac1d1db"
+              },
+              "total_cost": {
+                "type": "string",
+                "example": "1200000.00"
+              },
+              "updated_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-07-16T07:55:57.000000Z"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-07-16T07:55:57.000000Z"
+              }
+            }
+          },
+          "status_code": {
+            "type": "integer",
+            "example": 201
+          }
+        }
+      },
+      "GetNegotiationsByClientSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Negotiation data retrieved successfully."
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "example": "c4a85167-661a-4823-95ea-669cbac1d1db"
+              },
+              "order_id": {
+                "type": "string",
+                "format": "uuid",
+                "example": "791e9bc6-8d90-4b72-afc5-e9875af19998"
+              },
+              "work_start_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-05-06T09:00:00.000000Z"
+              },
+              "work_end_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-05-06T17:00:00.000000Z"
+              },
+              "working_hours_duration": {
+                "type": "string",
+                "example": "8.00"
+              },
+              "hourly_rate": {
+                "type": "string",
+                "example": "150000.00"
+              },
+              "total_cost": {
+                "type": "string",
+                "example": "1200000.00"
+              },
+              "note": {
+                "type": "string",
+                "example": "Butuh tambahan waktu untuk revisi desain"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-07-16T07:55:57.000000Z"
+              },
+              "updated_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-07-16T07:55:57.000000Z"
+              }
+            }
+          },
+          "status_code": {
+            "type": "integer",
+            "example": 200
+          }
+        }
+      },
       "CreateChatRequest": {
         "type": "object",
         "properties": {
