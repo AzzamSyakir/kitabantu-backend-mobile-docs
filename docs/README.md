@@ -1,66 +1,71 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# kitaBantu Mobile Backend
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This repository contains the **mobile backend service** for the `kitaBantu` mobile application, originally developed for **kitaBantu Indonesia**. The project has since been extended and maintained with improved documentation, architecture, and a cleaner developer experience.
 
-## About Laravel
+This backend powers the mobile application, handling authentication, freelancer orders, real-time chat, and payment workflows.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+📄 **API Documentation**  
+View full API documentation via Swagger UI: [Swagger Link](http://localhost/#/)
 
--   [Simple, fast routing engine](https://laravel.com/docs/routing).
--   [Powerful dependency injection container](https://laravel.com/docs/container).
--   Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
--   Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
--   Database agnostic [schema migrations](https://laravel.com/docs/migrations).
--   [Robust background job processing](https://laravel.com/docs/queues).
--   [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🚀 Features
 
-## Learning Laravel
+- **Authentication System**
+  - JWT-based access control
+  - Custom access and refresh tokens
+  - Refresh tokens stored securely in Redis
+- **Freelancer Ordering System**
+  - End-to-end process for ordering freelancers
+- **Real-Time Chat**
+  - WebSocket-based implementation for real-time messaging
+- **Payment Integration**
+  - Integrates with Midtrans Core API
+  - Supports card, bank transfer, e-money, and over-the-counter (OTC) payments
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## 🧰 Tech Stack
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+| Layer            | Technology                            |
+|------------------|----------------------------------------|
+| Language         | PHP (Laravel), Go (for WebSocket)      |
+| Database         | MySQL                                  |
+| Cache            | Redis                                  |
+| Messaging Queue  | RabbitMQ                               |
+| Email Service    | Mailtrap (SMTP)                        |
+| Real-time Comm.  | WebSocket                              |
+| API Documentation| Swagger (OpenAPI)                      |
+| Containerization | Docker (for development & production)  |
+| CI/CD            | GitHub Actions                         |
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 📦 Architecture Note: RabbitMQ Integration
 
-### Premium Partners
+RabbitMQ is intended to act as a message broker for syncing data between the **web** and **mobile** backend services.  
+As `kitaBantu Indonesia` plans to maintain separate backend systems for each platform, RabbitMQ was selected for:
 
--   **[Vehikl](https://vehikl.com/)**
--   **[Tighten Co.](https://tighten.co)**
--   **[WebReinvent](https://webreinvent.com/)**
--   **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
--   **[64 Robots](https://64robots.com)**
--   **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
--   **[Cyber-Duck](https://cyber-duck.co.uk)**
--   **[DevSquad](https://devsquad.com/hire-laravel-developers)**
--   **[Jump24](https://jump24.co.uk)**
--   **[Redberry](https://redberry.international/laravel/)**
--   **[Active Logic](https://activelogic.com)**
--   **[byte5](https://byte5.de)**
--   **[OP.GG](https://op.gg)**
+- High performance and low latency
+- Easy Laravel integration
+- Strong community and plugin ecosystem
+- Scalability for future microservices and asynchronous tasks
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 🗂️ Database Schema
 
-## Code of Conduct
+Here's the database structure that powers the mobile backend:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+![Database Schema](./db-schema.png)
 
-## Security Vulnerabilities
+## 🧑‍💻 Development
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Clone the repository and use Docker to start the environment:
 
-## License
+```bash
+# Start development environment
+make up-dev
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# Start production environment
+make up-prod

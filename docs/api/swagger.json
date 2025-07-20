@@ -15,12 +15,8 @@
   },
   "servers": [
     {
-      "url": "http://localhost:8000/",
-      "description": "Local server"
-    },
-    {
-      "url": "https://localhost:8000/",
-      "description": "HTTPS Local server"
+      "url": "https://kitabantu-api.azzamsyakir.com",
+      "description": "Https server"
     }
   ],
   "components": {
