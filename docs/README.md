@@ -53,6 +53,12 @@ As `kitaBantu Indonesia` plans to maintain separate backend systems for each pla
 
 ---
 
+## 🗂️ Database Schema
+
+Here's the database structure that powers the mobile backend:
+
+![Database Schema](./db-schema.png)
+
 ## 🧑‍💻 Development
 
 Clone the repository and use Docker to start the environment:
