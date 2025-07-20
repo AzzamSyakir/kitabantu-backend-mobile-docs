@@ -68,7 +68,15 @@ services:
             RABBITMQ_HOST: rabbitmq
             DB_HOST: app-db
             REDIS_HOST: redis
-        command: /bin/sh -c "sleep 5 && php artisan config:cache && php artisan migrate --force && php-fpm"
+        command: >
+            /bin/sh -c "
+                sleep 5 &&
+                php artisan config:clear &&
+                php artisan config:cache &&
+                php artisan migrate --force &&
+                php artisan db:seed --force &&
+                exec php-fpm
+            "
 
     nginx:
         image: bukanasa/kitabantu-backend:nginx
