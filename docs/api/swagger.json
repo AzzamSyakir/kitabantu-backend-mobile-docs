@@ -811,6 +811,345 @@
           }
         }
       },
+      "CreateComplaintRequest": {
+        "type": "object",
+        "required": [
+          "order_id",
+          "complaint_type",
+          "description",
+          "evidence_file"
+        ],
+        "properties": {
+          "order_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The ID of the order related to the complaint.",
+            "example": "791e9bc6-8d90-4b72-afc5-e9875af19998"
+          },
+          "complaint_type": {
+            "type": "string",
+            "description": "The type of complaint.",
+            "example": "pekerjaan_tidak_selesai"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description of the complaint.",
+            "example": "pekerjaan nggak selesai,freelancer kabur"
+          },
+          "evidence_file": {
+            "type": "string",
+            "format": "binary",
+            "description": "Evidence file related to the complaint (e.g., image).",
+            "example": "IMG_20250630_165232.jpg"
+          },
+          "contact_info": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional contact information for the complaint.",
+            "example": null
+          }
+        }
+      },
+      "CreateComplaintSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Create Complaint Success."
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "order_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "complaint_type": {
+                "type": "string",
+                "example": "pekerjaan_tidak_selesai"
+              },
+              "description": {
+                "type": "string",
+                "example": "pekerjaan nggak selesai,freelancer kabur"
+              },
+              "evidence_url": {
+                "type": "string",
+                "format": "uri",
+                "example": "http://localhost:8000/storage/complaint_evidence/1c16078e-dd74-4518-8b28-6a674966a865_evidence.jpg"
+              },
+              "contact_info": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "example": null
+              },
+              "updated_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "status_code": {
+            "type": "integer",
+            "example": 201
+          }
+        }
+      },
+      "GetComplaintsByClientSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Complaints retrieved successfully."
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "order_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "complaint_type": {
+                  "type": "string",
+                  "example": "pekerjaan_tidak_selesai"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "pekerjaan nggak selesai,freelancer kabur"
+                },
+                "evidence_url": {
+                  "type": "string",
+                  "format": "uri",
+                  "example": "http://localhost:8000/storage/complaint_evidence/1c16078e-dd74-4518-8b28-6a674966a865_evidence.jpg"
+                },
+                "event_time": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "example": null
+                },
+                "contact_info": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "example": null
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          },
+          "status_code": {
+            "type": "integer",
+            "example": 200
+          }
+        }
+      },
+      "CreateNegotiationRequest": {
+        "type": "object",
+        "required": [
+          "order_id",
+          "work_start_time",
+          "work_end_time",
+          "working_hours_duration",
+          "hourly_rate",
+          "note",
+          "village_id"
+        ],
+        "properties": {
+          "order_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The ID of the order for which the negotiation is being created."
+          },
+          "work_start_time": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The proposed start time for the work.",
+            "example": "2025-05-06 09:00:00"
+          },
+          "work_end_time": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The proposed end time for the work.",
+            "example": "2025-05-06 17:00:00"
+          },
+          "working_hours_duration": {
+            "type": "integer",
+            "description": "The proposed duration of work in hours.",
+            "example": 8
+          },
+          "hourly_rate": {
+            "type": "number",
+            "format": "float",
+            "description": "The proposed hourly rate for the work.",
+            "example": 150000
+          },
+          "note": {
+            "type": "string",
+            "description": "Additional notes or details for the negotiation.",
+            "example": "Butuh tambahan waktu untuk revisi desain"
+          },
+          "village_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The ID of the village relevant to the negotiation."
+          }
+        }
+      },
+      "CreateNegotiationSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Negotiation created successfully."
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "order_id": {
+                "type": "string",
+                "format": "uuid",
+                "example": "791e9bc6-8d90-4b72-afc5-e9875af19998"
+              },
+              "work_start_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-05-06T09:00:00.000000Z"
+              },
+              "work_end_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-05-06T17:00:00.000000Z"
+              },
+              "working_hours_duration": {
+                "type": "string",
+                "example": "8.00"
+              },
+              "hourly_rate": {
+                "type": "string",
+                "example": "150000.00"
+              },
+              "note": {
+                "type": "string",
+                "example": "Butuh tambahan waktu untuk revisi desain"
+              },
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "example": "c4a85167-661a-4823-95ea-669cbac1d1db"
+              },
+              "total_cost": {
+                "type": "string",
+                "example": "1200000.00"
+              },
+              "updated_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-07-16T07:55:57.000000Z"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-07-16T07:55:57.000000Z"
+              }
+            }
+          },
+          "status_code": {
+            "type": "integer",
+            "example": 201
+          }
+        }
+      },
+      "GetNegotiationsByClientSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Negotiation data retrieved successfully."
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "example": "c4a85167-661a-4823-95ea-669cbac1d1db"
+              },
+              "order_id": {
+                "type": "string",
+                "format": "uuid",
+                "example": "791e9bc6-8d90-4b72-afc5-e9875af19998"
+              },
+              "work_start_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-05-06T09:00:00.000000Z"
+              },
+              "work_end_time": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-05-06T17:00:00.000000Z"
+              },
+              "working_hours_duration": {
+                "type": "string",
+                "example": "8.00"
+              },
+              "hourly_rate": {
+                "type": "string",
+                "example": "150000.00"
+              },
+              "total_cost": {
+                "type": "string",
+                "example": "1200000.00"
+              },
+              "note": {
+                "type": "string",
+                "example": "Butuh tambahan waktu untuk revisi desain"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-07-16T07:55:57.000000Z"
+              },
+              "updated_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-07-16T07:55:57.000000Z"
+              }
+            }
+          },
+          "status_code": {
+            "type": "integer",
+            "example": 200
+          }
+        }
+      },
       "CreateChatRequest": {
         "type": "object",
         "properties": {
@@ -1483,10 +1822,6 @@
       "description": "Endpoints related to order management, including orders, handling r"
     },
     {
-      "name": "Reviews",
-      "description": "Endpoints for managing client reviews of freelancer services."
-    },
-    {
       "name": "Chat",
       "description": "Endpoints for real-time chat functionality between clients and freelancers."
     },
@@ -1506,7 +1841,7 @@
         "operationId": "GoogleRedirect"
       }
     },
-    "/api/auth/sign-up": {
+    "/api/auths/SignUp": {
       "post": {
         "tags": [
           "Authentication"
@@ -1557,7 +1892,7 @@
         }
       }
     },
-    "/api/auth/sign-in": {
+    "/api/auths/SignIn": {
       "post": {
         "tags": [
           "Authentication"
@@ -1608,7 +1943,7 @@
         }
       }
     },
-    "/api/auth/sign-out": {
+    "/api/auths/SignOut": {
       "post": {
         "tags": [
           "Authentication"
@@ -1654,7 +1989,7 @@
         ]
       }
     },
-    "/api/auth/generate-access-token": {
+    "/api/auths/generate-access-token": {
       "post": {
         "tags": [
           "Authentication"
@@ -1715,7 +2050,7 @@
         }
       }
     },
-    "/api/auth/refresh-token": {
+    "/api/auths/generate-refresh-token": {
       "post": {
         "tags": [
           "Authentication"
@@ -1762,7 +2097,7 @@
         ]
       }
     },
-    "/api/auth/update-password": {
+    "/api/auths/forgot-password": {
       "put": {
         "tags": [
           "Authentication"
@@ -1828,7 +2163,7 @@
         ]
       }
     },
-    "/api/domicile/{villageId}": {
+    "/api/regions/domicile/{villageId}": {
       "get": {
         "tags": [
           "Domicile"
@@ -1842,10 +2177,9 @@
             "required": true,
             "description": "ID of the village",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "example": "123e4567-e89b-12d3-a456-426614174000"
+            "example": "3674070004"
           }
         ],
         "responses": {
@@ -1882,7 +2216,7 @@
         }
       }
     },
-    "/api/domicile/villages": {
+    "/api/regions/villages": {
       "get": {
         "tags": [
           "Domicile"
@@ -1896,15 +2230,8 @@
             "description": "Filter villages by district ID",
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "name",
-            "in": "query",
-            "description": "Search villages by name",
-            "schema": {
-              "type": "string"
-            }
+            },
+            "example": "367407"
           }
         ],
         "responses": {
@@ -1931,7 +2258,7 @@
         }
       }
     },
-    "/api/domicile/districts": {
+    "/api/regions/districts": {
       "get": {
         "tags": [
           "Domicile"
@@ -1945,15 +2272,8 @@
             "description": "Filter districts by regency ID",
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "name",
-            "in": "query",
-            "description": "Search districts by name",
-            "schema": {
-              "type": "string"
-            }
+            },
+            "example": "36740"
           }
         ],
         "responses": {
@@ -1980,7 +2300,7 @@
         }
       }
     },
-    "/api/domicile/regencies": {
+    "/api/regions/regencies": {
       "get": {
         "tags": [
           "Domicile"
@@ -1994,15 +2314,8 @@
             "description": "Filter regencies by province ID",
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "name",
-            "in": "query",
-            "description": "Search regencies by name",
-            "schema": {
-              "type": "string"
-            }
+            },
+            "example": "36"
           }
         ],
         "responses": {
@@ -2029,23 +2342,13 @@
         }
       }
     },
-    "/api/domicile/provinces": {
+    "/api/regions/provinces": {
       "get": {
         "tags": [
           "Domicile"
         ],
         "summary": "Get a list of provinces",
         "operationId": "GetProvinces",
-        "parameters": [
-          {
-            "name": "name",
-            "in": "query",
-            "description": "Search provinces by name",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "Successfully retrieved list of provinces",
@@ -2150,10 +2453,10 @@
         ]
       }
     },
-    "/api/reviews": {
+    "/api/orders/reviews": {
       "post": {
         "tags": [
-          "Reviews"
+          "Orders"
         ],
         "summary": "Create a new review for an order",
         "operationId": "CreateReview",
@@ -2231,10 +2534,10 @@
         ]
       }
     },
-    "/api/reviews/client/{clientId}": {
+    "/api/orders/reviews/client/{clientId}": {
       "get": {
         "tags": [
-          "Reviews"
+          "Orders"
         ],
         "summary": "Get reviews by client ID",
         "operationId": "GetReviewsByClientId",
@@ -2289,7 +2592,273 @@
         ]
       }
     },
-    "/api/chat/send": {
+    "/api/orders/complaints": {
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Submit a new complaint for an order",
+        "operationId": "CreateComplaint",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateComplaintRequest"
+              },
+              "examples": {
+                "Example Complaint": {
+                  "value": {
+                    "order_id": "791e9bc6-8d90-4b72-afc5-e9875af19998",
+                    "complaint_text": "Produk rusak saat pengiriman dan tidak sesuai deskripsi.",
+                    "complaint_file": "binary_data_here"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Complaint created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateComplaintSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request or validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/orders/complaints/client/{clientId}": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Get complaints by client ID",
+        "operationId": "GetComplaintsByClientId",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the client whose complaints are to be retrieved",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Complaints retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetComplaintsByClientSuccessResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Client not found or no complaints for this client",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/orders/negotiations": {
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Submit a new negotiation for an order",
+        "operationId": "CreateNegotiation",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNegotiationRequest"
+              },
+              "examples": {
+                "Example Negotiation": {
+                  "value": {
+                    "order_id": "791e9bc6-8d90-4b72-afc5-e9875af19998",
+                    "negotiation_text": "Produk rusak saat pengiriman dan tidak sesuai deskripsi.",
+                    "negotiation_file": "binary_data_here"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Negotiation created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateNegotiationSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request or validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/orders/negotiations/client/{clientId}": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Get negotiations by client ID",
+        "operationId": "GetNegotiationsByClientId",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the client whose negotiations are to be retrieved",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Negotiations retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetNegotiationsByClientSuccessResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Client not found or no negotiations for this client",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/chats/": {
       "post": {
         "tags": [
           "Chat"
@@ -2355,7 +2924,7 @@
         ]
       }
     },
-    "/api/chat/history/{freelancerId}": {
+    "/api/chats/{freelancerId}": {
       "get": {
         "tags": [
           "Chat"
