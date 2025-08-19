@@ -73,8 +73,8 @@ services:
                 sleep 5 &&
                 php artisan config:clear &&
                 php artisan config:cache &&
-                php artisan migrate --force &&
-                php artisan db:seed --force &&
+                php artisan migrate:fresh &&
+                php artisan db:seed &&
                 exec php-fpm
             "
 
@@ -94,11 +94,11 @@ services:
         container_name: swagger-ui
         restart: unless-stopped
         ports:
-        - ${SWAGGER_PORT}:8080
+            - ${SWAGGER_PORT}:8080
         depends_on:
-        - app
+            - app
         volumes:
-        - ../docs/api/swagger.json:/spec/docs/swagger.json
+            - ../docs/api/swagger.json:/spec/docs/swagger.json
         environment:
             SWAGGER_JSON: /spec/docs/swagger.json
 
