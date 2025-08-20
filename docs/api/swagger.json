@@ -2231,7 +2231,7 @@
             "schema": {
               "type": "string"
             },
-            "example": "367407"
+            "example": "3674070"
           }
         ],
         "responses": {
@@ -2273,7 +2273,7 @@
             "schema": {
               "type": "string"
             },
-            "example": "3674070"
+            "example": "3674"
           }
         ],
         "responses": {
