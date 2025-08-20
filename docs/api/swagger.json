@@ -2216,7 +2216,7 @@
         }
       }
     },
-    "/api/regions/villages": {
+    "/api/regions/villages/{districtsId}": {
       "get": {
         "tags": [
           "Domicile"
@@ -2225,8 +2225,8 @@
         "operationId": "GetVillages",
         "parameters": [
           {
-            "name": "district_id",
-            "in": "query",
+            "name": "districtsId",
+            "in": "path",
             "description": "Filter villages by district ID",
             "schema": {
               "type": "string"
@@ -2258,7 +2258,7 @@
         }
       }
     },
-    "/api/regions/districts": {
+    "/api/regions/districts/{regencyId}": {
       "get": {
         "tags": [
           "Domicile"
@@ -2267,13 +2267,13 @@
         "operationId": "GetDistricts",
         "parameters": [
           {
-            "name": "regency_id",
-            "in": "query",
+            "name": "regencyId",
+            "in": "path",
             "description": "Filter districts by regency ID",
             "schema": {
               "type": "string"
             },
-            "example": "36740"
+            "example": "3674070"
           }
         ],
         "responses": {
@@ -2300,7 +2300,7 @@
         }
       }
     },
-    "/api/regions/regencies": {
+    "/api/regions/regencies/{provinceId}": {
       "get": {
         "tags": [
           "Domicile"
@@ -2309,8 +2309,8 @@
         "operationId": "GetRegencies",
         "parameters": [
           {
-            "name": "province_id",
-            "in": "query",
+            "name": "provinceId",
+            "in": "path",
             "description": "Filter regencies by province ID",
             "schema": {
               "type": "string"
