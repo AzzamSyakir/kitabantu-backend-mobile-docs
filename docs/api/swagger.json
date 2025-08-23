@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "KitaBantu Backend Mobile API",
-    "description": "This project is a backend API for an ecommerce-like application built with PHP (Laravel). It provides user authentication using JWT and custom tokens, order management, real-time chat via WebSocket, payment integration using Midtrans, and message delivery between services using RabbitMQ.",
+    "description": "This project is a backend API for an freelancer-like application built with PHP (Laravel). It provides user authentication using JWT and custom tokens, order management, real-time chat via WebSocket, payment integration using Midtrans, and message delivery between services using RabbitMQ.",
     "version": "1.0.0",
     "contact": {
       "name": "Developer",
