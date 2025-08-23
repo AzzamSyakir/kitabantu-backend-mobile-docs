@@ -1990,7 +1990,7 @@
       }
     },
     "/api/auths/generate-access-token": {
-      "post": {
+      "patch": {
         "tags": [
           "Authentication"
         ],
@@ -2051,7 +2051,7 @@
       }
     },
     "/api/auths/generate-refresh-token": {
-      "post": {
+      "patch": {
         "tags": [
           "Authentication"
         ],
