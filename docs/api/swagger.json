@@ -16,7 +16,11 @@
   "servers": [
     {
       "url": "https://kitabantu-api.azzamsyakir.com",
-      "description": "Https server"
+      "description": "Production server (HTTPS)"
+    },
+    {
+      "url": "http://localhost:8000",
+      "description": "Local test server"
     }
   ],
   "components": {
@@ -73,17 +77,12 @@
             "type": "string",
             "format": "uuid",
             "description": "ID of the user's village",
-            "example": "123e4567-e89b-12d3-a456-426614174000"
+            "example": "3674070004"
           },
           "preferred_service": {
             "type": "string",
             "description": "User's preferred service",
             "example": "translator"
-          },
-          "profile_photo": {
-            "type": "string",
-            "format": "binary",
-            "description": "Profile photo (optional)."
           }
         },
         "required": [
@@ -108,7 +107,7 @@
           "password": {
             "type": "string",
             "format": "password",
-            "example": "examplePassword123"
+            "example": "strongpassword123"
           }
         },
         "required": [
@@ -122,7 +121,7 @@
           "email": {
             "type": "string",
             "format": "email",
-            "example": "azzamsykir@gmail.com"
+            "example": "example.user@example.com"
           },
           "old_password": {
             "type": "string",
@@ -534,34 +533,27 @@
       "OrderCreationRequest": {
         "type": "object",
         "properties": {
-          "client_id": {
-            "type": "string",
-            "format": "uuid",
-            "description": "ID of the client placing the order",
-            "example": "39632c89-5bf6-4f19-908b-f43cdd61fdba"
-          },
           "freelancer_id": {
             "type": "string",
             "format": "uuid",
             "description": "ID of the freelancer for the order",
             "example": "f963b760-d38d-47f6-b1db-6811118f83ef"
           },
-          "work_location": {
+          "village_id": {
             "type": "string",
-            "description": "Full address of the work location",
-            "example": "PONDOK JAGUNG TIMUR, SERPONG UTARA, KOTA TANGERANG SELATAN, BANTEN"
+            "format": "uuid",
+            "description": "ID of the village for work location",
+            "example": "3674070004"
           },
           "work_start_time": {
             "type": "string",
-            "format": "date-time",
-            "description": "Start time of the work",
-            "example": "2025-05-06T05:00:00Z"
+            "description": "Start time of the work (format: Y-m-d H:i)",
+            "example": "2025-05-06 05:00"
           },
           "work_end_time": {
             "type": "string",
-            "format": "date-time",
-            "description": "End time of the work",
-            "example": "2025-05-06T20:00:00Z"
+            "description": "End time of the work (format: Y-m-d H:i)",
+            "example": "2025-05-06 20:00"
           },
           "estimated_travel_time": {
             "type": "integer",
@@ -573,21 +565,14 @@
             "format": "float",
             "description": "Hourly rate of the freelancer",
             "example": 50000.00
-          },
-          "total_cost": {
-            "type": "number",
-            "format": "float",
-            "description": "Total cost of the order",
-            "example": 751666.67
           }
         },
         "required": [
           "client_id",
           "freelancer_id",
-          "work_location",
+          "village_id",
           "work_start_time",
           "work_end_time",
-          "estimated_travel_time",
           "hourly_rate",
           "total_cost"
         ]
@@ -693,7 +678,7 @@
           "order_id": {
             "type": "string",
             "format": "uuid",
-            "description": "ID of the order being reviewed",
+            "description": "Order ID to be reviewed",
             "example": "791e9bc6-8d90-4b72-afc5-e9875af19998"
           },
           "rating_star": {
@@ -711,13 +696,14 @@
           "review_file": {
             "type": "string",
             "format": "binary",
-            "description": "Optional file attached to the review (e.g., an image)"
+            "description": "Optional file attached to the review (e.g., an uploaded image)"
           }
         },
         "required": [
           "order_id",
           "rating_star",
-          "rating_text"
+          "rating_text",
+          "review_file"
         ]
       },
       "CreateReviewSuccessResponse": {
@@ -1819,7 +1805,7 @@
     },
     {
       "name": "Orders",
-      "description": "Endpoints related to order management, including orders, handling r"
+      "description": "Endpoints related to order management, including orders, reviews, and complaint"
     },
     {
       "name": "Chat",
@@ -2098,7 +2084,7 @@
       }
     },
     "/api/auths/forgot-password": {
-      "put": {
+      "post": {
         "tags": [
           "Authentication"
         ],
@@ -2386,20 +2372,6 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/OrderCreationRequest"
-              },
-              "examples": {
-                "Example Order": {
-                  "value": {
-                    "client_id": "39632c89-5bf6-4f19-908b-f43cdd61fdba",
-                    "freelancer_id": "f963b760-d38d-4f76-b1db-6811118f83ef",
-                    "work_location": "PONDOK JAGUNG TIMUR, SERPONG UTARA, KOTA TANGERANG SELATAN, BANTEN",
-                    "work_start_time": "2025-05-06T05:00:00Z",
-                    "work_end_time": "2025-05-06T20:00:00Z",
-                    "estimated_travel_time": 2,
-                    "hourly_rate": 50000.00,
-                    "total_cost": 751666.67
-                  }
-                }
               }
             }
           }
@@ -2466,21 +2438,6 @@
             "multipart/form-data": {
               "schema": {
                 "$ref": "#/components/schemas/CreateReviewRequest"
-              },
-              "examples": {
-                "Example Review": {
-                  "value": {
-                    "order_id": "791e9bc6-8d90-4b72-afc5-e9875af19998",
-                    "rating_star": 5,
-                    "rating_text": "Sangat membantu, pekerjaan selesai dengan cepat dan rapi. Terima kasih!",
-                    "review_file": "binary_data_here"
-                  }
-                }
-              },
-              "encoding": {
-                "review_file": {
-                  "contentType": "image/png, image/jpeg"
-                }
               }
             }
           }
