@@ -55,7 +55,6 @@ services:
             - socket-data:/srv/logs
         ports:
             - ${SOCKET_PORT}:8080
-
     app:
         image: bukanasa/kitabantu-backend:app
         container_name: app
@@ -68,6 +67,8 @@ services:
             RABBITMQ_HOST: rabbitmq
             DB_HOST: app-db
             REDIS_HOST: redis
+        volumes:
+            - laravel_storage:/var/www/storage
         command: >
             /bin/sh -c "
                 sleep 5 &&
@@ -75,6 +76,7 @@ services:
                 php artisan config:cache &&
                 php artisan migrate:fresh &&
                 php artisan db:seed &&
+                php artisan storage:link
                 exec php-fpm
             "
 
@@ -88,6 +90,8 @@ services:
         ports:
             - "${APP_HTTP_PORT}:80"
             - "${APP_SSL_PORT}:443"
+        volumes:
+            - laravel_storage:/var/www/storage
 
     swagger-ui:
         image: swaggerapi/swagger-ui:latest
@@ -107,3 +111,4 @@ volumes:
     rabbitmq-data:
     redis-data:
     socket-data:
+    laravel_storage:

@@ -45,17 +45,30 @@ COPY . .
 
 # 8) Create user non-root & set permission
 ARG UID=1000
-ARG USER=appuser
+ARG USER=userApp
 
-RUN addgroup -g ${UID} ${USER} \
-  && adduser -D -u ${UID} -G ${USER} -h /home/${USER} ${USER} \
+# 8) Create user non-root & set permission
+ARG UID=1000
+ARG GID=1000
+ARG USER=userApp
+ARG GROUP=userGroup
+
+ENV USER=${USER} \
+  UID=${UID} \
+  GROUP=${GROUP} \
+  GID=${GID}
+
+RUN addgroup -g ${GID} ${GROUP} \
+  && adduser -D -u ${UID} -G ${GROUP} -h /home/${USER} ${USER} \
+  && adduser ${USER} www-data \
   && mkdir -p /home/${USER}/.composer \
   && mkdir -p /var/www/storage /var/www/bootstrap/cache \
-  && chown -R ${USER}:${USER} /var/www/storage /var/www/bootstrap/cache /home/${USER}
-
+  && chown -R ${USER}:${GROUP} /var/www/storage /var/www/bootstrap/cache /home/${USER} \
+  && chmod -R 755 /var/www/storage /var/www/bootstrap/cache
 # 9) Switch to non-root user
 USER ${USER}
 
-
 # 10) Expose port & default command
-EXPOSE 9000
+CMD php artisan storage:link && \
+  php artisan config:cache && \
+  php-fpm
