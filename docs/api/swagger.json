@@ -1805,7 +1805,7 @@
     },
     {
       "name": "Payments",
-      "description": "Endpoints for processing various types of payments."
+      "description": "Endpoints for processing various types of payments. Currently running in **sandbox mode** for demo purposes. To test a payment, you can simulate it using the [Midtrans Payment Simulator](https://simulator.sandbox.midtrans.com/)"
     }
   ],
   "paths": {
@@ -1815,7 +1815,7 @@
           "Authentication"
         ],
         "summary": "Google Redirect for authentication with Google",
-        "description": "This endpoint cannot be tested directly via Swagger UI because it does not return a JSON response.<br><br>Instead, it performs an HTTP redirect to Google's OAuth login page where the user can authenticate using their Google account.<br><br>To try it out manually, you can open <a href=\"https://kitabantu-api.azzamsyakir.com/auth/google/redirect\">the link</a> in your browser.",
+        "description": "This endpoint cannot be tested directly via Swagger UI because it does not return a JSON response.<br><br>Instead, it performs an HTTP redirect to Google's OAuth login page where the user can authenticate using their Google account.<br><br>To try it out manually, you can open the [link](https://kitabantu-api.azzamsyakir.com/auth/google/redirect) in your browser.",
         "operationId": "GoogleRedirect"
       }
     },
