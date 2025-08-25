@@ -827,14 +827,6 @@
             "format": "binary",
             "description": "Evidence file related to the complaint (e.g., image).",
             "example": "IMG_20250630_165232.jpg"
-          },
-          "contact_info": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "description": "Optional contact information for the complaint.",
-            "example": null
           }
         }
       },
@@ -1003,8 +995,8 @@
           },
           "village_id": {
             "type": "string",
-            "format": "uuid",
-            "description": "The ID of the village relevant to the negotiation."
+            "description": "job location",
+            "example": 3674070004
           }
         }
       },
@@ -1809,7 +1801,7 @@
     },
     {
       "name": "Chat",
-      "description": "Endpoints for real-time chat functionality between clients and freelancers."
+      "description": "Endpoints for real-time chat functionality between clients and freelancers. For an example of the real-time WebSocket chat, please check this [link](https://kitabantu-api.azzamsyakir.com/tes-socket.html)."
     },
     {
       "name": "Payments",
@@ -2491,7 +2483,7 @@
         ]
       }
     },
-    "/api/orders/reviews/client/{clientId}": {
+    "/api/orders/reviews/{clientId}": {
       "get": {
         "tags": [
           "Orders"
@@ -2624,7 +2616,7 @@
         ]
       }
     },
-    "/api/orders/complaints/client/{clientId}": {
+    "/api/orders/complaints/{clientId}": {
       "get": {
         "tags": [
           "Orders"
@@ -2757,7 +2749,7 @@
         ]
       }
     },
-    "/api/orders/negotiations/client/{clientId}": {
+    "/api/orders/negotiations/{clientId}": {
       "get": {
         "tags": [
           "Orders"
@@ -2821,6 +2813,7 @@
           "Chat"
         ],
         "summary": "Send a chat message",
+        "description": "This function sends chat messages. In the demo, instead of creating a new room, all messages are sent to a fixed room \"tes-room-1\". You can test the real-time WebSocket example here: [link](https://kitabantu-api.azzamsyakir.com/tes-socket.html) and check the \"tes-room-1\" column to see your sent messages.",
         "operationId": "SendChat",
         "requestBody": {
           "required": true,
@@ -2886,7 +2879,7 @@
         "tags": [
           "Chat"
         ],
-        "summary": "Get chat history with a freelancer",
+        "summary": "Get room chat history",
         "operationId": "GetChatHistory",
         "parameters": [
           {
