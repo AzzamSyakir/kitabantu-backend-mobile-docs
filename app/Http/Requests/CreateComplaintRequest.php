@@ -17,13 +17,17 @@ class CreateComplaintRequest extends FormRequest
   public function rules(): array
   {
     return [
-      'order_id' => 'required|uuid|exists:orders,id',
-      'complaint_type' => 'required|in:pekerjaan_tidak_selesai,hasil_tidak_sesuai_brief,freelancer_tidak_merespons,komunikasi_tidak_profesional,dugaan_penipuan_atau_penyalahgunaan,lainnya',
-      'description' => 'nullable|string',
-      'evidence_file' => 'nullable|file|image|mimes:jpg,jpeg,png',
-      'contact_info' => 'nullable|string',
+      'order_id' => ['required', 'exists:orders,id'],
+      'complaint_type' => [
+        'required',
+        'in:pekerjaan_tidak_selesai,hasil_tidak_sesuai_brief,freelancer_tidak_merespons,komunikasi_tidak_profesional,dugaan_penipuan_atau_penyalahgunaan,lainnya',
+      ],
+      'description' => ['nullable', 'string'],
+      'evidence_file' => ['nullable', 'file', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+      'contact_info' => ['nullable', 'string'],
     ];
   }
+
 
 
   public function validateResolved()

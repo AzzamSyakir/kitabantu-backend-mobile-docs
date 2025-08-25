@@ -105,6 +105,8 @@ services:
             - "${APP_SSL_PORT}:443"
         volumes:
             - ../storage:/var/www/storage
+            - ../tes-socket.html:/var/www/public/tes-socket.html
+
     swagger-ui:
         image: swaggerapi/swagger-ui:latest
         container_name: swagger-ui
@@ -117,6 +119,15 @@ services:
             - ../docs/api/swagger.json:/spec/docs/swagger.json
         environment:
             SWAGGER_JSON: /spec/docs/swagger.json
+
+    ngrok:
+        image: ngrok/ngrok
+        container_name: ngrok
+        restart: always
+        network_mode: host
+        environment:
+            - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+        command: http --domain=${NGROK_DOMAIN} ${NGROK_PORT}
 
 volumes:
     app-db:
