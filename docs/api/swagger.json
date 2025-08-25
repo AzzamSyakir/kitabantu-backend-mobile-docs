@@ -3331,7 +3331,6 @@
               "examples": {
                 "Card Payment": {
                   "value": {
-                    "freelancer_id": "f963b760-d38d-47f6-b1db-6811118f83ef",
                     "amount": 6000000,
                     "payment_method": "card",
                     "card": {
