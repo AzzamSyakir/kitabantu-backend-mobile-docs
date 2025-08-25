@@ -93,7 +93,6 @@ services:
         volumes:
             - laravel_storage:/var/www/storage
             - ../tes-socket.html:/var/www/public/tes-socket.html
-
     swagger-ui:
         image: swaggerapi/swagger-ui:latest
         container_name: swagger-ui

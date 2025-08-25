@@ -120,6 +120,15 @@ services:
         environment:
             SWAGGER_JSON: /spec/docs/swagger.json
 
+    ngrok:
+        image: ngrok/ngrok
+        container_name: ngrok
+        restart: always
+        network_mode: host
+        environment:
+            - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+        command: http --domain=${NGROK_DOMAIN} ${NGROK_PORT}
+
 volumes:
     app-db:
     rabbitmq-data:
