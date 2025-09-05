@@ -1,6 +1,6 @@
 services:
     app-db:
-        image: mysql:lts-oraclelinux9
+        image: mysql:lts-oraclelinux8
         container_name: app-db
         restart: always
         tty: true
