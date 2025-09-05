@@ -1,19 +1,14 @@
-# 1) Base image
-FROM php:8.4.10-fpm-alpine
+# Stage 1: Build
+FROM php:8.4.10-fpm-alpine AS build
 
-# 2) Build args & env
-ARG user=user
-ARG uid=1000
-ENV USER=${user} \
-  UID=${uid} \
-  COMPOSER_ALLOW_SUPERUSER=1
+ARG UID=1000
+ARG GID=1000
+ARG USER=userApp
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
-# 3) Install system deps & PHP extensions
 RUN apk add --no-cache \
-  --no-cache linux-headers \
-  libressl \
+  linux-headers \
   libressl-dev \
-  rabbitmq-c \
   rabbitmq-c-dev \
   zlib-dev \
   libxml2-dev \
@@ -23,15 +18,11 @@ RUN apk add --no-cache \
   g++ \
   make \
   bash \
+  curl \
   && docker-php-ext-install pdo_mysql sockets
 
-# 4) Set working directory
-WORKDIR /var/www
-
-# 5) Copy composer files dulu supaya caching layer maksimal
+WORKDIR /app
 COPY composer.json composer.lock ./
-
-# 6) Install Composer & dependencies
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 RUN composer install \
   --no-dev \
@@ -40,35 +31,31 @@ RUN composer install \
   --no-interaction \
   --no-scripts
 
-# 7) Copy entire source app
 COPY . .
 
-# 8) Create user non-root & set permission
-ARG UID=1000
-ARG USER=userApp
+RUN addgroup -g ${GID} ${USER} \
+  && adduser -D -u ${UID} -G ${USER} ${USER} \
+  && mkdir -p /var/www/storage /var/www/bootstrap/cache /home/${USER}/.composer \
+  && chown -R ${USER}:${USER} /var/www/storage /var/www/bootstrap/cache /home/${USER} /app \
+  && chmod -R 755 /var/www/storage /var/www/bootstrap/cache
 
-# 8) Create user non-root & set permission
+# Stage 1: runtime
+FROM php:8.4.10-fpm-alpine AS runtime
+
+RUN apk add --no-cache libressl rabbitmq-c
+
+WORKDIR /var/www
+COPY --from=build /app /var/www
+
 ARG UID=1000
 ARG GID=1000
 ARG USER=userApp
-ARG GROUP=userGroup
+RUN addgroup -g ${GID} ${USER} \
+  && adduser -D -u ${UID} -G ${USER} ${USER} \
+  && chown -R ${USER}:${USER} /var/www/storage /var/www/bootstrap/cache
 
-ENV USER=${USER} \
-  UID=${UID} \
-  GROUP=${GROUP} \
-  GID=${GID}
-
-RUN addgroup -g ${GID} ${GROUP} \
-  && adduser -D -u ${UID} -G ${GROUP} -h /home/${USER} ${USER} \
-  && adduser ${USER} www-data \
-  && mkdir -p /home/${USER}/.composer \
-  && mkdir -p /var/www/storage /var/www/bootstrap/cache \
-  && chown -R ${USER}:${GROUP} /var/www/storage /var/www/bootstrap/cache /home/${USER} \
-  && chmod -R 755 /var/www/storage /var/www/bootstrap/cache
-# 9) Switch to non-root user
 USER ${USER}
 
-# 10) Expose port & default command
 CMD php artisan storage:link && \
   php artisan config:cache && \
   php-fpm
