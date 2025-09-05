@@ -1,5 +1,5 @@
 # 1) Base image
-FROM nginx:stable-perl
+FROM nginx:stable-alpine3.21-perl
 
 # 2) Copy config
 COPY  docker/conf/nginx/conf.d /etc/nginx/conf.d

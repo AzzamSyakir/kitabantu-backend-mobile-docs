@@ -1,21 +1,26 @@
-# 1) Start from Golang base image
-FROM golang:1.24.5-alpine
+# Stage 1: Build
+FROM golang:tip-alpine3.22 AS build
 
-# 2) Install dependencies
-RUN apk update && apk add --no-cache git build-base
+RUN apk add --no-cache git build-base
 
-# 3) Set workdir
-WORKDIR /app
-
-# 4) Copy source code
-COPY docker/socket-server /app/socket-server
-COPY .env /app/socket-server/.env
-
-# 5) Go to project dir & download dependencies
 WORKDIR /app/socket-server
+
+COPY docker/socket-server/go.mod docker/socket-server/go.sum ./
 RUN go mod download
 
-# 6) Run the Go program
+COPY docker/socket-server ./
+
 RUN go build -o main socket.go
-RUN ls -a
+
+# Stage 2: Runtime
+FROM golang:tip-alpine3.22
+
+RUN apk add --no-cache ca-certificates
+
+WORKDIR /app/socket-server
+
+COPY --from=build /app/socket-server/main ./
+COPY .env ./
+
+
 CMD ["./main"]
